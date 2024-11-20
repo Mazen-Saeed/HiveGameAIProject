@@ -64,6 +64,12 @@ class GameState:
         """
         pass
 
+    def is_this_cell_ok(self,cell):
+        """
+        checks if the cell the player selected to move the piece in it is ok or not
+        """
+        pass
+
     def check_for_a_winning(self):
         """
         Checks for a winning condition.
