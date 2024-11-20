@@ -79,7 +79,7 @@ class GameState:
         pass
 
 
-    def check_for_a_winning(self):
+    def check_for_a_winner(self):
         """
         Checks for a winning condition.
         :return: "p1" if player 1 won, "p2" if player 2 won, or "c" if no player has won
