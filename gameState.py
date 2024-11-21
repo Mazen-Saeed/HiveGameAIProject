@@ -1,3 +1,4 @@
+
 class CellPosition:
     def __init__(self, q, r):
         """
