@@ -50,7 +50,7 @@ class GameState:
         self.player1AvailablePieces = AvailablePieces()
         self.player2AvailablePieces = AvailablePieces()
         self.current_allowed_moves = []
-        self.must_play_queen_bee = False # if number of turns for a player is 3 and queen bee cell position is still (-1,-1) put it to true to signal that the player must play queen bee
+
 
     def reset(self,player1Type, player2Type,player1Level,player2Level):
         self._initialize_state(player1Type,player2Type,player1Level,player2Level)
