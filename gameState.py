@@ -1,3 +1,6 @@
+from sympy import false
+
+
 class CellPosition:
     def __init__(self, q, r):
         """
@@ -7,6 +10,9 @@ class CellPosition:
         """
         self.q = q  # Column value
         self.r = r  # Row value
+
+    def __eq__(self, other):
+        return self.q == other.q and self.r == other.r
 
 
 class AvailablePieces:
@@ -43,6 +49,8 @@ class GameState:
         self.player2Level = player2Level # "e" for easy, "m" for medium, "h" for hard, "p" if player
         self.player1AvailablePieces = AvailablePieces()
         self.player2AvailablePieces = AvailablePieces()
+        self.current_allowed_moves = []
+        self.must_play_queen_bee = False # if number of turns for a player is 3 and queen bee cell position is still (-1,-1) put it to true to signal that the player must play queen bee
 
     def reset(self,player1Type, player2Type,player1Level,player2Level):
         self._initialize_state(player1Type,player2Type,player1Level,player2Level)
@@ -56,7 +64,7 @@ class GameState:
         pass
 
 
-    def get_allowed_moves(self):
+    def get_allowed_cells(self):
         """
         Retrieves all allowed moves for the current player.
         Used when a person is playing.
@@ -64,7 +72,20 @@ class GameState:
         pass
 
 
-    def get_allowed_moves_given_a_cell(self, cell):
+    def must_place_queen_bee(self):
+        moves = self.player1Moves
+        queen_bee_cell = self.q1
+        if self.turn == 2:
+            moves = self.player2Moves
+            queen_bee_cell = self.q2
+
+        if moves == 3 and queen_bee_cell == CellPosition(-1,-1):
+            return True
+
+        return False
+
+
+    def get_allowed_cells_given_the_piece_on_cell(self, cell):
         """
         Retrieves allowed moves for the specified cell.
         :param cell: An object of CellPosition representing the selected cell
