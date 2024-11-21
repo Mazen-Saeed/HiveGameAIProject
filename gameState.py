@@ -1,6 +1,3 @@
-from sympy import false
-
-
 class CellPosition:
     def __init__(self, q, r):
         """
@@ -29,6 +26,9 @@ class AvailablePieces:
 
 
     def is_this_piece_available(self,piece):
+        """
+        checks if the piece selected to be played is available for the player or no
+        """
         pass
 
 class GameState:
@@ -90,14 +90,44 @@ class GameState:
         Retrieves allowed moves for the specified cell.
         :param cell: An object of CellPosition representing the selected cell
         """
+        piece = self.state[cell.r][cell.q]
+        if piece.startswith("g"):
+            self.get_allowed_cells_for_grasshopper_from_cell(cell)
+        elif piece.startswith("a"):
+            self.get_allowed_cells_for_ant_from_cell(cell)
+        elif piece.startswith("s"):
+            self.get_allowed_cells_for_spider_from_cell(cell)
+        elif piece.startswith("b"):
+            self.get_allowed_cells_for_beetle_from_cell(cell)
+        else:
+            self.get_allowed_cells_for_queen_bee_from_cell(cell)
+
+
+    def get_allowed_cells_for_grasshopper_from_cell(self,cell):
         pass
 
+    def get_allowed_cells_for_ant_from_cell(self,cell):
+        pass
 
-    def is_this_cell_ok(self,cell):
+    def get_allowed_cells_for_spider_from_cell(self,cell):
+        pass
+
+    def get_allowed_cells_for_beetle_from_cell(self,cell):
+        pass
+
+    def get_allowed_cells_for_queen_bee_from_cell(self,cell):
+        pass
+
+    def is_the_piece_on_cell_ok(self,cell):
         """
         checks if the cell the player selected to move the piece in it is ok or not
         """
         pass
+
+    def is_this_cell_ok(self,cell):
+        """
+         checks if the cell selected to place a piece in it or move a piece to it is from the allowed or not
+        """
 
 
     def check_for_a_winner(self):
@@ -117,10 +147,13 @@ class GameState:
         """
         pass
 
+
+
+
 """
  Pieces in the game:
  Grasshopper pieces >> g1, g2
- Ant pieces >> p1, p2
+ Ant pieces >> a1, a2
  Spider pieces >> s1, s2
  Beetle pieces >> b1, b2
  Queen pieces >> q1, q2
