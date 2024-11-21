@@ -1,4 +1,3 @@
-
 class CellPosition:
     def __init__(self, q, r):
         """
@@ -130,7 +129,6 @@ class GameState:
          checks if the cell selected to place a piece in it or move a piece to it is from the allowed or not
         """
 
-
     def check_for_a_winner(self):
         """
         Checks for a winning condition.
@@ -159,3 +157,9 @@ class GameState:
  Beetle pieces >> b1, b2
  Queen pieces >> q1, q2
 """
+
+"""
+if beetle is on top of other pieces
+  "g1g2s2....b1"
+"""
+
