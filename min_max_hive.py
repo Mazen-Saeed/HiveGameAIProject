@@ -1,6 +1,6 @@
 import copy
 import math
-from template import GameState, CellPosition
+from gameState import GameState, CellPosition
 
 class MinMaxAI:
     def __init__(self, max_depth):
