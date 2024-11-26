@@ -5,14 +5,17 @@ class CellPosition:
     dq_even = [-1, 0, 1,0,-1,-1]
 
 
-    def __init__(self, q, r):
+    def __init__(self, r, q):
         """
         Represents a position on the grid.
         :param q: Column value
         :param r: Row value
         """
-        self.q = q  # Column value
         self.r = r  # Row value
+        self.q = q  # Column value
+
+
+
 
     def __eq__(self, other):
         return self.q == other.q and self.r == other.r
@@ -40,7 +43,7 @@ class CellPosition:
                 new_r = self.r + CellPosition.dr_even[i]
 
             if 0 <= new_q < 50 and 0 <= new_r < 50:
-                neighbors.append(CellPosition(new_q, new_r))
+                neighbors.append(CellPosition(new_r, new_q))
 
         return neighbors
 
@@ -341,9 +344,9 @@ class GameState:
         :return: None
         """
         if from_cell != CellPosition(-1, -1):
-            self.state[from_cell.q][from_cell.r].remove_piece()
+            self.state[from_cell.r][from_cell.q].remove_piece()
 
-        self.state[to_cell.q][to_cell.r].add_piece(piece)
+        self.state[to_cell.r][to_cell.q].add_piece(piece)
         if piece.get_name() == 'q':
             if piece.get_player() == 1:
                 self.q1 = to_cell
