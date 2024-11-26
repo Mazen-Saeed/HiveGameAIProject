@@ -376,6 +376,6 @@ To do:
   
   4) get_allowed_cells_given_the_piece_on_cell logic
   
-  5) somthing is wrong with get_allowed_cells and maybe related to neighbours logic
+  5) testing is needed
   
 """
