@@ -1,6 +1,9 @@
 class CellPosition:
-    dq = [0, 1, 1, 1, 0, -1]
-    dr = [-1, -1, 0, 1, 1, 0]
+    dr_odd = [-1, -1, 0, 1, 1, 0]
+    dq_odd = [0, 1, 1, 1, 0, -1]
+    dr_even = [-1, -1, 0,1,1,1]
+    dq_even = [-1, 0, 1,0,-1,-1]
+
 
     def __init__(self, q, r):
         """
@@ -14,14 +17,28 @@ class CellPosition:
     def __eq__(self, other):
         return self.q == other.q and self.r == other.r
 
+    def __hash__(self):
+        return hash((self.q, self.r))  # Hash based on the tuple (q, r)
+
+    def __str__(self):
+        """
+        Custom string representation for CellPosition.
+        """
+        return f"({self.q}, {self.r})"
+
     def get_neighbors(self):
         """
         Returns the neighboring CellPosition objects for the current position.
         """
         neighbors = []
-        for i in range(len(CellPosition.dq)):  # Loop over the direction offsets
-            new_q = self.q + CellPosition.dq[i]
-            new_r = self.r + CellPosition.dr[i]
+        for i in range(len(CellPosition.dq_odd)):
+            if self.r % 2 == 1:# Loop over the direction offsets
+                new_q = self.q + CellPosition.dq_odd[i]
+                new_r = self.r + CellPosition.dr_odd[i]
+            else:
+                new_q = self.q + CellPosition.dq_even[i]
+                new_r = self.r + CellPosition.dr_even[i]
+
             if 0 <= new_q < 50 and 0 <= new_r < 50:
                 neighbors.append(CellPosition(new_q, new_r))
 
@@ -147,7 +164,7 @@ class GameState:
         pass
 
 
-    def all_neighbours_from_player_or_empty(self, neighbours, player_num):
+    def all_neighbours_from_player_or_empty(self, neighbours):
         """
         Checks if all neighbors of a given cell either belong to the specified player
         or are empty (not occupied by any piece).
@@ -161,7 +178,7 @@ class GameState:
             if cell_obj.is_occupied():
                 top_piece = cell_obj.get_top_piece()
                 at_least_one_neighbour = True
-                if top_piece.get_player() != player_num:
+                if top_piece.get_player() != self.turn:
                     return False
 
         return at_least_one_neighbour
@@ -180,11 +197,14 @@ class GameState:
                 for neighbor in neighbors:
                     self.current_allowed_moves.add(neighbor)
 
+        if len(self.current_allowed_moves)>0:
+            return self.current_allowed_moves
+
         for row in range(50):
             for col in range(50):
                 cell = self.state[row][col]
-                if not cell.is_occupied() and self.all_neighbours_from_player_or_empty(CellPosition(row,col).get_neighbors(),self.turn):
-                    self.current_allowed_moves.add(cell)
+                if not cell.is_occupied() and self.all_neighbours_from_player_or_empty(CellPosition(row,col).get_neighbors()):
+                    self.current_allowed_moves.add(CellPosition(row,col))
 
         return self.current_allowed_moves
 
@@ -355,5 +375,7 @@ To do:
   3) make a move (AI algorithms)
   
   4) get_allowed_cells_given_the_piece_on_cell logic
+  
+  5) somthing is wrong with get_allowed_cells and maybe related to neighbours logic
   
 """
