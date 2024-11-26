@@ -379,6 +379,6 @@ To do:
   
   4) get_allowed_cells_given_the_piece_on_cell logic
   
-  5) testing is needed
+  5) testing is needed.
   
 """
