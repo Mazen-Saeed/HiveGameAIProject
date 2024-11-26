@@ -1,7 +1,7 @@
 class CellPosition:
     dr_odd = [-1, -1, 0, 1, 1, 0]
     dq_odd = [0, 1, 1, 1, 0, -1]
-    dr_even = [-1, -1, 0,1,1,1]
+    dr_even = [-1, -1, 0,1,1,0]
     dq_even = [-1, 0, 1,0,-1,-1]
 
 
