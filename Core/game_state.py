@@ -1,5 +1,6 @@
-from pieces import Grasshopper, Ant, Beetle, Spider, Queen
+from pieces import Piece,Grasshopper, Ant, Beetle, Spider, Queen
 from cell_position import CellPosition
+
 class AvailablePieces:
     '''
     This class keeps track of all unplaced pieces.
@@ -300,72 +301,3 @@ if __name__ == '__main__':
         print(mygame.state[2][2].generate_paths(3, mygame.state))
         print(mygame.must_place_queen_bee())
         print(mygame.check_for_a_winner())
-
-        """
-        p
-        5 5 Queen
-        p
-        5 6 Queen
-        m
-        5 5 6 6
-        p
-        6 7 Grasshopper
-        p
-        7 7 Grasshopper
-
-
-        --------------
-        p
-        2 0 Queen
-        p
-        2 1 Queen
-        p
-        3 2 Grasshopper
-        p
-        2 3 Beetle
-        p
-        2 4 Grasshopper
-        p
-        1 4 Grasshopper
-        p
-        0 4 Grasshopper
-        p
-        0 3 Ant
-        p
-        1 2 Beetle
-        p
-        0 1 Grasshopper
-        m
-        2 0 1 0
-        p
-        1 5 Ant
-        p
-        2 0 Spider
-        m
-        2 0 3 1
-
-        --------------
-        p
-        2 0 Grasshopper
-        p
-        2 1 Grasshopper
-        p
-        3 2 Grasshopper
-        p
-        2 3 Grasshopper
-        p
-        2 4 Grasshopper
-        p
-        1 4 Grasshopper
-        p
-        0 4 Beetle
-        p
-        0 3 Beetle
-        p
-        1 2 Ant
-        p
-        0 1 Ant
-        m
-        2 0 1 0
-
-        """
