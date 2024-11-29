@@ -77,6 +77,12 @@ class CellPosition:
     def get_center_of_board(game_board):
         return game_board[25][25]
 
+    @staticmethod
+    def get_board_as_iterable_list(game_board):
+        new_list = []
+        for row in game_board:
+            new_list.extend(row)
+        return new_list
 
     def get_neighbors(self, game_board):
         """
@@ -161,21 +167,27 @@ class CellPosition:
                     same_color.add(cell)
         return same_color
 
-    def get_hive(self, game_board, visited=None):
+    def get_hive_from_cell(self, game_board, visited=None):
         if visited is None:
             visited = set()
         visited.add(self)
         neighbors = self.get_occupied_neighbors(game_board)
         for neighbor in neighbors:
             if neighbor not in visited:
-                neighbor.get_hive(game_board, visited)
+                neighbor.get_hive_from_cell(game_board, visited)
         return visited
+
+    @staticmethod
+    def get_hive(game_board):
+        board = CellPosition.get_board_as_iterable_list(game_board)
+        hive = [position for position in board if position.is_occupied()]
+        return hive
 
     def is_a_bridge(self, game_board):
         neighbors = set(self.get_occupied_neighbors(game_board))
         tested_piece = self.remove_piece()
 
-        rest_of_hive = self.get_hive(game_board)
+        rest_of_hive = self.get_hive_from_cell(game_board)
 
         self.add_piece(tested_piece)
 

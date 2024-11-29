@@ -227,6 +227,9 @@ if __name__ == '__main__':
 
     print_hexagonal(mygame.state)
     print(mygame.player_available_pieces)
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import matplotlib.patches as patches
     while (True):
         print(f"Player {mygame.turn} type 'p' to place and 'm' to move.")
         type_of_turn = input().strip()
@@ -242,9 +245,8 @@ if __name__ == '__main__':
             mygame.get_allowed_cells_given_the_piece_on_cell(mygame.state[y1][x1])
             print(mygame.current_allowed_moves)
             mygame.update_state(globals()["Piece"](mygame.turn), mygame.state[y2][x2], mygame.state[y1][x1])
-        import matplotlib.pyplot as plt
-        import numpy as np
-        import matplotlib.patches as patches
+
+        # print(CellPosition.get_hive(mygame.state))
 
         # Function to draw hexagonal grid
         def draw_hexagonal_grid(data, ax, hex_size=30, zoom=1):

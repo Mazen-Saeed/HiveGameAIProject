@@ -1,0 +1,5 @@
+1- Precompute every move in a dictionary in GameState so that we know when some user has no available turns (to skip their turn)
+2- Update comments and docstrings
+3- Handle actual full-game logic (maybe, this might be up to GUI?)
+4- Put each insect class in its own file
+5- optimise maybe. Everything in rules (piece.py, cell_position.py, game_state.py) is currently brute-forced.
