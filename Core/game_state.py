@@ -1,40 +1,7 @@
-from pieces import Piece,Grasshopper, Ant, Beetle, Spider, Queen
+from pieces import Piece,Queen
+from Ai import MinMaxAI,AlphaBetaPruningAI,AlphaBetaPruningWithIterativeDeepeningAI
 from Core.cell_position import CellPosition
-
-class AvailablePieces:
-    '''
-    This class keeps track of all unplaced pieces.
-    '''
-    def __init__(self, player_number):
-        self.pieces = [Grasshopper(player_number)] * 3
-        self.pieces += [Ant(player_number)] * 3
-        self.pieces += [Beetle(player_number)] * 2
-        self.pieces += [Spider(player_number)] * 2
-        self.pieces += [Queen(player_number)] * 1
-
-    def __str__(self):
-        return ", ".join(str(piece) for piece in self.pieces)
-
-    def __repr__(self):
-        return "[" + self.__str__() + "]"
-
-    def __iter__(self):
-        for piece in self.pieces:
-            yield piece
-
-    def update_available_pieces(self, piece):
-        if piece in self.pieces:
-            return self.pieces.pop(self.pieces.index(piece))
-        else:
-            raise ValueError(f"{piece} not found in available pieces: {[str(p) for p in self.pieces]}.")
-
-    def is_this_piece_available(self, piece):
-        """
-        Checks if the piece selected to be played is available for the player or not.
-        :param piece: The piece to check availability for (e.g., "g1", "a2", etc.)
-        :return: True if the piece is available, False otherwise.
-        """
-        return piece in self.pieces
+from Core.player import Player
 
 
 class GameState:
@@ -46,12 +13,8 @@ class GameState:
 
     def _initialize_state(self, player1Type, player2Type, player1Level, player2Level):
         self.state = CellPosition.create_board() # Reset grid state
-        self.queens = [None, None]  # Reset player queen bee position
-        self.turn = 0  # Reset turn to player 1
-        self.player_moves = [0, 0]  # Reset players' move count
-        self.player_types = [player1Type, player2Type]  # "p" if player is a person, "c" if a computer
-        self.player_levels = [player1Level, player2Level]  # "e" for easy, "m" for medium, "h" for hard, "p" if player is a person
-        self.player_available_pieces = [AvailablePieces(0), AvailablePieces(1)]
+        self.players = [Player(1, player1Type, player1Level),Player(2, player2Type, player2Level)]
+        self.turn = 0  # Reset turn to player 1 (0 >> player 1 and 1 >> player 2)
         self.current_allowed_moves = set()
         self.playerWon = 0  # 1 if player 1 win and 2 if player 2 win
 
@@ -60,7 +23,15 @@ class GameState:
         Makes a move for the current player in case of a computer using the AI algorithms.
         should output 2 pairs (from_cell and to_cell)
         """
-        pass
+        if self.players[self.turn].get_level() == "e":
+            # use MinMaxAI
+            pass
+        elif self.players[self.turn].get_level() == "m":
+            # use AlphaBetaPruningAI
+            pass
+        else:
+            # use AlphaBetaPruningWithIterativeDeepeningAI
+            pass
 
     def get_allowed_cells(self):
         """
@@ -68,7 +39,7 @@ class GameState:
         """
         self.current_allowed_moves = set()
 
-        if self.player_moves[self.turn] == 0:
+        if self.players[self.turn].get_moves_count() == 0:
             if self.turn == 0:
                 self.current_allowed_moves.add(CellPosition.get_center_of_board(self.state))
             else:
@@ -89,8 +60,7 @@ class GameState:
             - True if the current player has made exactly 3 moves and their Queen Bee is still unplaced (position is (-1, -1)).
             - False if the Queen Bee has already been placed, or the player hasn't reached the required number of moves.
         """
-        moves = self.player_moves[self.turn]
-        if moves >= 3 and Queen(self.turn) in self.player_available_pieces[self.turn]:
+        if self.players[self.turn].get_moves_count() >= 3 and self.players[self.turn].queen_unplaced():
             return True
         return False
 
@@ -108,23 +78,32 @@ class GameState:
     def is_the_piece_on_cell_ok(self, cell: CellPosition):
         """
         The cell should be occupied and the piece should belong to the current player.
+        use it when a player tries to select a cell to move the piece in it
         :param cell: CellPosition representing the cell to check.
         :return: True if the cell is occupied by the current player's piece, False otherwise.
         """
-        top_piece = cell.get_top_piece()
-        return not cell.is_occupied() or top_piece.get_player() != self.turn
+        return cell.is_occupied() and cell.get_player() == self.turn
 
     def is_this_cell_ok(self, cell: CellPosition):
         """
         Checks if the given cell is part of the allowed moves for the current player.
+        use it after a player chooses a cell to place or move a piece to it
         :param cell: CellPosition representing the cell to check.
         :return: true if the cell is in the list of current allowed moves, False otherwise.
         """
         return cell in self.current_allowed_moves
 
+    def is_the_piece_available(self,piece):
+        """
+        Checks if the piece selected to be played is available for the player or not.
+        :param piece: The piece to check availability for (e.g., "g1", "a2", etc.)
+        :return: True if the piece is available, False otherwise.
+        """
+        return self.players[self.turn].unplaced_pieces.is_this_piece_available(piece)
+
     def check_for_a_winner(self):
         """
-        Checks if either player's queen bee has all of its neighboring cells occupied,
+        Checks if either player's queen has all of its neighboring cells occupied,
         which is a winning condition in the game.
 
         :return:
@@ -132,16 +111,21 @@ class GameState:
         - 2 if player 2 wins (player 2's queen bee is surrounded),
         - 0 if no player has won yet (both queen bees are not surrounded).
         """
-        for i, queen in enumerate(self.queens):
-            if not queen:
-                continue
-            queen_neighbors = queen.get_neighbors(self.state)
-            all_queen_neighbors_occupied = all(
-                neighbor.is_occupied() for neighbor in queen_neighbors)
-            if all_queen_neighbors_occupied:
-                self.playerWon = i + 1
-        return self.playerWon
+        for player in self.players:
+            queen = player.get_queen()  # Access the current player's queen
+            if queen is None:
+                continue  # If the player doesn't have their queen placed yet, skip to the next player
 
+            queen_neighbors = queen.get_neighbors(self.state)  # Get the neighbors of the queen
+            all_queen_neighbors_occupied = all(
+                neighbor.is_occupied() for neighbor in queen_neighbors)  # Check if all neighbors are occupied
+
+            if all_queen_neighbors_occupied:
+                player_number = player.get_player_number()
+                player_who_won = - player_number + 3
+                return player_who_won # Return the winning player number (1 or 2)
+
+        return 0  # No player has won yet
 
     def update_state(self, piece: Piece, to_cell: CellPosition, from_cell: CellPosition = None):
         """
@@ -158,35 +142,11 @@ class GameState:
         to_cell.add_piece(piece)
 
         if isinstance(piece, Queen):
-            self.queens[self.turn] = to_cell
+            self.players[self.turn].set_queen(to_cell)
 
         if not from_cell:
-            self.player_available_pieces[self.turn].update_available_pieces(piece)
+            self.players[self.turn].update_available_pieces(piece,to_cell)
 
-        self.player_moves[self.turn] += 1
+        self.players[self.turn].moves_count += 1
 
-        if self.turn == 0:
-            self.turn = 1
-        else:
-            self.turn = 0
-
-
-
-    # Is there a point to this being here?
-    def all_neighbours_from_player_or_empty(self, neighbours):
-        """
-        Checks if all neighbors of a given cell either belong to the specified player
-        or are empty (not occupied by any piece).
-        :param neighbours: List of CellPosition objects representing neighboring cells
-        :param player_num: The player number to check for (1 or 2)
-        :return: True if all neighbors belong to the player or are empty, False otherwise
-        """
-        at_least_one_neighbour = False
-        for neighbour in neighbours:
-            cell_obj = self.state[neighbour.r][neighbour.q]
-            if cell_obj.is_occupied():
-                top_piece = cell_obj.get_top_piece()
-                at_least_one_neighbour = True
-                if top_piece.get_player() != self.turn:
-                    return False
-                    return at_least_one_neighbour
+        self.turn = 1 - self.turn

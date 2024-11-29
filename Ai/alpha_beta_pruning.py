@@ -1,0 +1,3 @@
+
+class AlphaBetaPruningAI:
+    pass

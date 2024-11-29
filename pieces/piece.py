@@ -13,6 +13,9 @@ class Piece:
     def __str__(self):
         return f"{self.name}-P{self.player}"
 
+    def __hash__(self):
+        return hash((self.name, self.player))
+
     def get_name(self):
         return self.name
 
