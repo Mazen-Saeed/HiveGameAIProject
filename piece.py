@@ -29,11 +29,21 @@ class Piece:
         return self.player
 
     def get_available_placements(self, game_board):
-        """checks that the piece placed will be connected to one's color"""
+        """checks that the piece placed will be connected to one's color ONLY"""
         available_positions = set()
-        same_color_positions = CellPosition.get_same_color_cells(game_board, self.get_player)
+        same_color_positions = CellPosition.get_same_color_cells(game_board, self.get_player())
         for position in same_color_positions:
             neighbors = position.get_neighbors(game_board)
+
+            different_color_neighbors = []
+
+            for neighbor in neighbors:
+                if neighbor.is_occupied() and neighbor.get_player() != self.get_player():
+                    different_color_neighbors.append(neighbor)
+
+            if different_color_neighbors:
+                continue
+
             neighbors = [neighbor for neighbor in neighbors if not neighbor.is_occupied()]
             available_positions.update(neighbors)
         return available_positions
@@ -41,37 +51,45 @@ class Piece:
     def get_available_moves(self, cell, game_board):
         pass
 
-    def move_once_respecting_one_hive(self, cell, game_board):
-        neighbors = cell.get_neighbors(game_board)
-        unoccupied_neighbors = {neighbor for neighbor in neighbors if not neighbor.is_occupied()}
+    def breaks_one_hive(self, position_a, position_b, game_board, use_height):
+        if use_height:
+            if position_a.get_height() > 1:
+                return False
 
-        occupied_neighbors = {neighbor for neighbor in neighbors if neighbor.is_occupied()}
+        unoccupied_neighbors = set(position_a.get_unoccupied_neighbors(game_board))
+        occupied_neighbors = set(position_a.get_occupied_neighbors(game_board))
+
         neighbors_of_occupied_neighbors = set()
         for neighbor in occupied_neighbors:
             neighbors_of_occupied_neighbors.update(neighbor.get_neighbors(game_board))
 
-        return unoccupied_neighbors.intersection(neighbors_of_occupied_neighbors)
+        return position_b not in unoccupied_neighbors.intersection(neighbors_of_occupied_neighbors)
 
+    def breaks_freedom_of_movement(self, position_a, position_b, game_board, use_height):
+        a_neighbors = set(position_a.get_occupied_neighbors(game_board))
+        b_neighbors = set(position_b.get_occupied_neighbors(game_board))
+        blocking_cells = a_neighbors.intersection(b_neighbors)
+        if use_height:
+            for block in blocking_cells:
+                if not position_a.get_height() < block.get_height() \
+                  or not position_b.get_height() < block.get_height():
+                    return False
+            return True
+        else:
+            return len(blocking_cells) >= 2
 
-    def does_it_break_one_hive(self, cell):
-        if cell.get_piece_height() > 1:
-            return False
-        return False
-        pass
-
-    def can_it_move_from(self, cell):
-        """
-        check also if surrounded by too many neighbors to move
-        """
+    def is_path_valid(self, cell, path, game_board, use_height=False):
+        top_piece = cell.remove_piece()
+        for i in range(len(path) - 1):
+            position_a, position_b = path[i], path[i + 1]
+            if self.breaks_one_hive(position_a, position_b, game_board, use_height) \
+              or self.breaks_freedom_of_movement(position_a, position_b, game_board, use_height):
+                cell.add_piece(top_piece)
+                return False
+        cell.add_piece(top_piece)
         return True
-        pass
 
-    def can_it_move_to(self, cell):
-        """
-        check if target piece is surrounded by too many neighbors: accounts for beetle via height of stack
-        """
-        return True
-        pass
+
 
 class Grasshopper(Piece):
     def __init__(self, player):
@@ -80,7 +98,8 @@ class Grasshopper(Piece):
 
     def get_available_moves(self, cell, game_board):
         available_positions = set()
-        if not self.does_it_break_one_hive(cell):
+
+        if cell.is_a_bridge(game_board):
             return available_positions
 
         diagonals = cell.get_diagonals(game_board)
@@ -100,22 +119,15 @@ class Beetle(Piece):
     def get_available_moves(self, cell, game_board):
         available_positions = set()
 
-        if self.does_it_break_one_hive(cell):
+        if cell.is_a_bridge(game_board):
             return available_positions
 
-        neighbors = cell.get_neighbors(game_board)
+        available_paths = cell.generate_paths(1, game_board)
+        available_paths = [path for path in available_paths if self.is_path_valid(cell, path, game_board, True)]
 
-        # A beetle can go anywhere from on top of the hive
-        if cell.get_piece_height() > 1:
-            available_positions.update(neighbors)
-            return available_positions
+        available_positions.update([path[-1] for path in available_paths])
+        available_positions.update(cell.get_occupied_neighbors(game_board))
 
-        available_positions.update(self.move_once_respecting_one_hive(cell, game_board))
-        available_positions = {position for position in available_positions if self.can_it_move_to(position)}
-
-        occupied_neighbors = {neighbor for neighbor in neighbors if neighbor.is_occupied()}
-
-        available_positions.update(occupied_neighbors)
         return available_positions
 
         # check link on discord about small holes
@@ -129,19 +141,16 @@ class Ant(Piece):
         self.player = player
     def get_available_moves(self, cell, game_board):
         available_positions = set()
-        if self.does_it_break_one_hive(cell):
-            return available_positions
-        if not self.can_it_move_from(cell):
+
+        if cell.is_a_bridge(game_board):
             return available_positions
 
-        # rules here
-        """
-        Same questions about the spider and the one-hive rule.
+        available_paths = cell.generate_paths(60, game_board, True)
+        available_paths = [path for path in available_paths if self.is_path_valid(cell, path, game_board)]
+        for path in available_paths:
+            available_positions.update(path)
 
-        I know if a place is too narrow, the ant just bounces off and can keep moving
-        as illustrated in the rule-book.
-        """
-        available_positions = {position for position in available_positions if self.can_it_move_to(position)}
+        return available_positions
 
 class Spider(Piece):
     def __init__(self, player):
@@ -150,30 +159,14 @@ class Spider(Piece):
 
     def get_available_moves(self, cell, game_board):
         available_positions = set()
-        """
-        if not self.does_it_break_one_hive(cell):
-            return available_positions
-        if not self.can_it_move_from(cell):
+
+        if cell.is_a_bridge(game_board):
             return available_positions
 
-        If a spider connects two islands but stays in the middle while moving, does that break one-hive?
+        available_paths = cell.generate_paths(3, game_board)
+        available_paths = [path for path in available_paths if self.is_path_valid(cell, path, game_board)]
 
-        Can some location reached in the middle by spider be too narrow? do I have to check
-        can_it_move_to for every cell on its 3-length path?
-
-        """
-        neighbors = cell.get_neighbors(game_board)
-        unoccupied_neighbors = [neighbor for neighbor in neighbors if not neighbor.is_occupied()]
-        available_positions.update(unoccupied_neighbors)
-
-        for i in range(2):
-            unoccupied_neighbors = set()
-            for neighbor in available_positions:
-                neighbors = neighbor.get_neighbors(game_board)
-                unoccupied_neighbors.update([neighbor for neighbor in neighbors if not neighbor.is_occupied()])
-            available_positions.update(unoccupied_neighbors)
-
-        available_positions = {position for position in available_positions if self.can_it_move_to(position)}
+        available_positions.update([path[-1] for path in available_paths])
         return available_positions
 
 
@@ -183,17 +176,15 @@ class Queen(Piece):
         self.player = player
 
     def get_available_moves(self, cell, game_board):
-        #TODO: doesn't follow one-hive rule
         available_positions = set()
-        if self.does_it_break_one_hive(cell):
-            return available_positions
-        if not self.can_it_move_from(cell):
+
+        if cell.is_a_bridge(game_board):
             return available_positions
 
-        available_positions.update(self.move_once_respecting_one_hive(cell, game_board))
-        # This whole thing is to make sure one-hive rule is followed
+        available_paths = cell.generate_paths(1, game_board)
+        available_paths = [path for path in available_paths if self.is_path_valid(cell, path, game_board)]
 
-        available_positions = {position for position in available_positions if self.can_it_move_to(position)}
+        available_positions.update([path[-1] for path in available_paths])
         return available_positions
 
 
