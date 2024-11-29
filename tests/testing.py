@@ -1,4 +1,5 @@
-from gameState import GameState, Piece, CellPosition
+from Core.game_state import GameState, CellPosition
+from pieces import Piece,Grasshopper,Queen,Spider,Beetle,Ant
 
 
 # Initialize game state

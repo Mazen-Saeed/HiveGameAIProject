@@ -1,4 +1,4 @@
-from gameState import CellPosition
+from Core.game_state import CellPosition
 for i in range(7):
     for j in range(7):
        print("Neighbours of ",i," ",j,": ")

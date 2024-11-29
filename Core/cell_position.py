@@ -192,11 +192,3 @@ class CellPosition:
         self.add_piece(tested_piece)
 
         return bool(neighbors.difference(rest_of_hive))
-
-
-
-# TODO:
-# a general dfs function with a level parameter because this is annoying
-# (queen 1 level, beetle 1 level, spider 3 levels, ant infinite levels)
-# ant needs DFS in case hive is in the shape of a donut or two donuts or whatever.
-# grasshopper will need its own.. stuff. it moves like a rook.

@@ -1,7 +1,5 @@
-from piece import *
+from pieces import Grasshopper, Ant, Beetle, Spider, Queen
 from cell_position import CellPosition
-
-
 class AvailablePieces:
     '''
     This class keeps track of all unplaced pieces.
@@ -192,27 +190,7 @@ class GameState:
                     return False
                     return at_least_one_neighbour
 
-"""
-To do:
 
-  1) A draw may also be agreed if both players are in a position where they are
-     forced to move the same two pieces over and over again, without any possibility
-     of the stalemate being resolved.
-
-  2) Unable to Move or to Place: If a player can nether place a new piece or move an
-     existing piece, the turn passes to their opponent who then takes their turn again.
-
-  3) make a move (AI algorithms)
-
-  4) get_allowed_cells_given_the_piece_on_cell logic
-
-  5) testing is needed.
-
-  6) Precompute all moves for every cell and keep it in a map on every turn switch
-
-  7) One-hive rule
-
-"""
 
 
 if __name__ == '__main__':
