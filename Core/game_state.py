@@ -49,7 +49,8 @@ class GameState:
         if self.current_allowed_moves:
             return self.current_allowed_moves
 
-        return Piece(self.turn).get_available_placements(self.state)
+        self.current_allowed_moves =  Piece(self.turn).get_available_placements(self.state)
+        return self.current_allowed_moves
 
 
     def must_place_queen_bee(self):
