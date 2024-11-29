@@ -101,6 +101,11 @@ class GameState:
         """
         return self.players[self.turn].unplaced_pieces.is_this_piece_available(piece)
 
+
+    def player_allowed_to_move(self):
+        return self.players[self.turn].get_queen() is not None
+
+
     def check_for_a_winner(self):
         """
         Checks if either player's queen has all of its neighboring cells occupied,
@@ -150,3 +155,7 @@ class GameState:
         self.players[self.turn].moves_count += 1
 
         self.turn = 1 - self.turn
+
+    def player_allowed_to_play(self):
+        allowed_placements = self.get_allowed_cells()
+        return allowed_placements or self.players[self.turn].placed_pieces_has_moves(self.state)

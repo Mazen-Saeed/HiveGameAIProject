@@ -11,27 +11,42 @@ def print_hexagonal(grid, max_rows=10, max_cols=10):
         print(offset + row_str)
 
 print_hexagonal(mygame.state)
-print(mygame.player_available_pieces)
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.patches as patches
-while (True):
-    print(f"Player {mygame.turn} type 'p' to place and 'm' to move.")
+while True:
+    print(f"Player {mygame.turn + 1} type 'p' to place and 'm' to move.")
     type_of_turn = input().strip()
 
     if type_of_turn == "p":
+        # Player wants to place a piece
         x2, y2, name = input("Enter 2 numbers and piece name (x2, y2, name): ").split()
         x2, y2 = int(x2), int(y2)
-        print(mygame.get_allowed_cells())
-        mygame.update_state(globals()[name](mygame.turn), mygame.state[y2][x2])
+        piece = globals()[name](mygame.turn + 1)  # Creating the piece based on the name entered
+
+        # Check if the cell is allowed for placing the piece
+        if mygame.is_this_cell_ok(mygame.state[y2][x2]):
+            mygame.update_state(piece, mygame.state[y2][x2])
+            print(f"Placed {piece} at ({x2}, {y2})")
+        else:
+            print(f"Invalid move! {piece} can't be placed at ({x2}, {y2}).")
 
     elif type_of_turn == "m":
+        # Player wants to move a piece
         x1, y1, x2, y2 = map(int, input("Enter 4 numbers (from x1, y1 to x2, y2): ").split())
-        mygame.get_allowed_cells_given_the_piece_on_cell(mygame.state[y1][x1])
-        print(mygame.current_allowed_moves)
-        mygame.update_state(globals()["Piece"](mygame.turn), mygame.state[y2][x2], mygame.state[y1][x1])
 
-        # Function to draw hexagonal grid
+        from_cell = mygame.state[y1][x1]
+        to_cell = mygame.state[y2][x2]
+
+        # Check if the piece is allowed to be moved and if the move is valid
+        if mygame.is_the_piece_on_cell_ok(from_cell) and mygame.is_this_cell_ok(to_cell):
+            piece = from_cell.remove_piece()  # Remove the piece from the starting cell
+            mygame.update_state(piece, to_cell, from_cell)  # Update the game state with the move
+            print(f"Moved {piece} from ({x1}, {y1}) to ({x2}, {y2})")
+        else:
+            print(f"Invalid move! You can't move from ({x1}, {y1}) to ({x2}, {y2}).")
+
+    # Function to draw hexagonal grid
     def draw_hexagonal_grid(data, ax, hex_size=30, zoom=1):
         rows, cols = data[:10, :10].shape
 
@@ -47,7 +62,7 @@ while (True):
         for row in range(rows):
             for col in range(cols):
                 # Calculate the x, y coordinates for the hexagon
-                x = col * width #* np.sqrt(3) / 2  # Base x-position for rotated hexagons
+                x = col * width
                 y = row * height
 
                 text_color = plt.cm.viridis(hash(data[row, col].get_name()) % 256 / 255)
@@ -97,6 +112,7 @@ while (True):
     plt.show()
 
     print_hexagonal(mygame.state)
+
     for attribute, value in vars(mygame).items():
         if attribute == "state":
             continue
