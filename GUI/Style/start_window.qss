@@ -1,0 +1,32 @@
+@font-face {
+        font-family: 'Pridi';
+        src: url('file://GUI/Fonts/Pridi-SemiBold.ttf');
+    }
+QMainWindow {
+                background-image: url('../Images/background.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-attachment: fixed;
+            }
+QPushButton {
+    font-family: 'Pridi';
+    background-color: rgba(247, 181, 0, 0.8); /* F7B500 with 80% opacity */
+    border-radius: 20px; /* Rounded corners */
+    border: 1px solid white; /* White border with 1px thickness */
+    color: white; /* Text color */
+    padding: 10px 20px; /* Padding inside the button */
+    
+}
+
+QPushButton:hover {
+    background-color: rgba(247, 181, 0, 1); /* Fully opaque yellow on hover */
+}
+
+QPushButton:pressed {
+    background-color: rgba(247, 181, 0, 0.6); /* Slightly darker yellow when pressed */
+}
+
+
+QLabel {
+    font-family: 'Pridi';
+}
