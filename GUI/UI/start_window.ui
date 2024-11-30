@@ -24,13 +24,9 @@ background-size: cover;
    <widget class="QLabel" name="hive_label">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>320</x>
       <y>150</y>
-<<<<<<< HEAD
       <width>381</width>
-=======
-      <width>491</width>
->>>>>>> e6b2c122003ff53ac22e85da77c9f9fe97fa5e8f
       <height>198</height>
      </rect>
     </property>
@@ -65,9 +61,9 @@ background-size: cover;
    <widget class="QLabel" name="game_label">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>140</y>
-      <width>561</width>
+      <x>1217</x>
+      <y>154</y>
+      <width>481</width>
       <height>198</height>
      </rect>
     </property>
