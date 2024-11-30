@@ -95,15 +95,17 @@ class GameState:
     def is_this_cell_ok(self, to_cell: CellPosition, piece:Piece=None, from_cell:CellPosition=None):
         """
         Checks if the given cell is part of the allowed moves for the current player.
-        use it after a player chooses a cell to place or move a piece to it
-        :param piece: should be None if it's a placement and piece if it's a move
-        :param cell: CellPosition representing the cell to check.
-        :return: true if the cell is in the list of current allowed moves, False otherwise.
+        use it after a player chooses a piece to place or chooses a cell to move a piece to it.
+
+        :param to_cell: The CellPosition the player is moving to/placing at
+        :param piece: The piece the player is placing on the board, should be None if it's a move
+        :param from_cell: CellPosition representing the cell the user will move to, None if it's a placement.
+        :return: True if the cell is in the list of current allowed moves, False otherwise.
         """
         if piece:
             return to_cell in self.current_allowed_placements
         else:
-            return from_cell and to_cell in self.current_allowed_moves.get(from_cell)
+            return (from_cell) and (from_cell in self.current_allowed_moves) and (to_cell in self.current_allowed_moves[from_cell])
 
     def is_the_piece_available(self,piece):
         """
@@ -155,9 +157,9 @@ class GameState:
         Updates the game state after a move, including the position of the piece and any necessary changes
         to the turn, move count, and available pieces.
 
-        :param piece: The piece being moved (e.g., a Queen Bee, Ant, Grasshopper, etc.)
-        :param from_cell: The cell from which the piece is moving
-        :param to_cell: The cell to which the piece is moving
+        :param to_cell: The cell to which the piece is placing/moving
+        :param piece: The piece being placed (e.g., a Queen Bee, Ant, Grasshopper, etc.), None if player is moving a piece
+        :param from_cell: The cell from which the piece is moving, None if the player is placing a piece
         :return: None
         """
         if from_cell:
@@ -173,8 +175,14 @@ class GameState:
         self.reset_for_new_turn()
 
     def player_allowed_to_play(self):
+        """
+        Computes every available placement and move for a player, and returns a boolean. True if
+        the player can perform his turn (a placement or a move), False otherwise.
+
+        :return: bool
+        """
         self.current_allowed_placements = self.get_allowed_cells()
-        #updaates current allowed moves by reference
+        # updates current allowed moves by reference
         self.players[self.turn].is_there_allowed_moves_for_player(self.state, self.current_allowed_moves)
         result = self.current_allowed_placements or self.current_allowed_moves
         if not result:
