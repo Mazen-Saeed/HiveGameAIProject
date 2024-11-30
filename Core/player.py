@@ -63,10 +63,14 @@ class Player:
         self.unplaced_pieces.update(piece)
         self.placed_pieces[piece] = cell
 
-    def placed_pieces_has_moves(self, board_state):
+    def is_there_allowed_moves_for_player(self, board_state,current_allowed_moves):
+        found_moves = False
         for piece, cell in self.placed_pieces.items():
             available_moves = piece.get_available_moves(cell, board_state)
             if available_moves:
-                return True
-        return False
+                current_allowed_moves[piece] = available_moves
+                found_moves = True
+
+        return found_moves
+
 

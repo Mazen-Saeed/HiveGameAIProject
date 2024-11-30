@@ -15,7 +15,8 @@ class GameState:
         self.state = CellPosition.create_board() # Reset grid state
         self.players = [Player(1, player1Type, player1Level),Player(2, player2Type, player2Level)]
         self.turn = 0  # Reset turn to player 1 (0 >> player 1 and 1 >> player 2)
-        self.current_allowed_moves = set()
+        self.current_allowed_moves = {}
+        self.current_allowed_placements = set()
         self.playerWon = 0  # 1 if player 1 win and 2 if player 2 win
 
     def make_a_move(self):
@@ -37,20 +38,21 @@ class GameState:
         """
         Retrieves allowed cells for placing a piece.
         """
-        self.current_allowed_moves = set()
+        if self.current_allowed_placements:
+            return self.current_allowed_placements
 
         if self.players[self.turn].get_moves_count() == 0:
             if self.turn == 0:
-                self.current_allowed_moves.add(CellPosition.get_center_of_board(self.state))
+                self.current_allowed_placements.add(CellPosition.get_center_of_board(self.state))
             else:
                 neighbors = CellPosition.get_center_of_board(self.state).get_neighbors(self.state)
-                self.current_allowed_moves.update(neighbors)
+                self.current_allowed_placements.update(neighbors)
 
-        if self.current_allowed_moves:
-            return self.current_allowed_moves
+        if self.current_allowed_placements:
+            return self.current_allowed_placements
 
-        self.current_allowed_moves =  Piece(self.turn).get_available_placements(self.state)
-        return self.current_allowed_moves
+        self.current_allowed_placements =  Piece(self.turn).get_available_placements(self.state)
+        return self.current_allowed_placements
 
 
     def must_place_queen_bee(self):
@@ -68,13 +70,16 @@ class GameState:
     def get_allowed_cells_given_the_piece_on_cell(self, cell: CellPosition):
         """
         Retrieves allowed moves for the specified cell.
-        :param cell: An object of CellPosition representing the selected cell
+        :param cell: An object of CellPosition representing the selected cell.
         ## NOTE: this should be the object from the game_board, because
-                 otherwise it won't hold the pieces
+                 otherwise it won't hold the pieces.
         """
         piece = cell.get_top_piece()
-        self.current_allowed_moves = piece.get_available_moves(cell, self.state)
-        return self.current_allowed_moves
+
+        if not self.current_allowed_moves:
+            self.players[self.turn].is_there_allowed_moves_for_player(self.state,self.current_allowed_moves)
+
+        return self.current_allowed_moves[piece]
 
     def is_the_piece_on_cell_ok(self, cell: CellPosition):
         """
@@ -85,14 +90,18 @@ class GameState:
         """
         return cell.is_occupied() and cell.get_player() == self.turn
 
-    def is_this_cell_ok(self, cell: CellPosition):
+    def is_this_cell_ok(self, cell: CellPosition,piece:Piece):
         """
         Checks if the given cell is part of the allowed moves for the current player.
         use it after a player chooses a cell to place or move a piece to it
+        :param piece: should be None if it's a placement and piece if it's a move
         :param cell: CellPosition representing the cell to check.
         :return: true if the cell is in the list of current allowed moves, False otherwise.
         """
-        return cell in self.current_allowed_moves
+        if piece is None:
+            return cell in self.current_allowed_placements
+        else:
+            return cell in self.current_allowed_moves[piece]
 
     def is_the_piece_available(self,piece):
         """
@@ -157,6 +166,9 @@ class GameState:
 
         self.turn = 1 - self.turn
 
+        self.current_allowed_moves = {}
+        self.current_allowed_placements = set()
+
     def player_allowed_to_play(self):
-        allowed_placements = self.get_allowed_cells()
-        return allowed_placements or self.players[self.turn].placed_pieces_has_moves(self.state)
+        self.current_allowed_placements = self.get_allowed_cells()
+        return self.current_allowed_placements or self.players[self.turn].is_there_allowed_moves_for_player(self.state,self.current_allowed_moves)
