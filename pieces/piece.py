@@ -19,27 +19,32 @@ class Piece:
     def get_name(self):
         return self.name
 
-    def get_player(self):
+    def get_player_number(self):
         return self.player
 
-    def get_available_placements(self, game_board):
+    @staticmethod
+    def get_available_placements(player, game_board):
         """checks that the piece placed will be connected to one's color ONLY"""
         available_positions = set()
-        same_color_positions = CellPosition.get_same_color_cells(game_board, self.get_player())
+        same_color_positions = player.get_placed_pieces()
+
+        neighbors_of_same_color_pos = set()
         for position in same_color_positions:
-            neighbors = position.get_neighbors(game_board)
+            neighbors_of_same_color_pos.update(position.get_neighbors(game_board))
 
-            different_color_neighbors = []
+        for position in neighbors_of_same_color_pos:
+            different_color_neighbors = False
 
-            for neighbor in neighbors:
-                if neighbor.is_occupied() and neighbor.get_player() != self.get_player():
-                    different_color_neighbors.append(neighbor)
-
-            if different_color_neighbors:
+            if position.is_occupied():
                 continue
 
-            neighbors = [neighbor for neighbor in neighbors if not neighbor.is_occupied()]
-            available_positions.update(neighbors)
+            neighbors = position.get_neighbors(game_board)
+            different_color_neighbors = any(
+                neighbor.is_occupied() and neighbor.get_player_number() != player.get_player_number() for neighbor in neighbors)
+
+            if not different_color_neighbors:
+                available_positions.add(position)
+
         return available_positions
 
     def get_available_moves(self, cell, game_board):
@@ -63,14 +68,17 @@ class Piece:
         a_neighbors = set(position_a.get_occupied_neighbors(game_board))
         b_neighbors = set(position_b.get_occupied_neighbors(game_board))
         blocking_cells = a_neighbors.intersection(b_neighbors)
+        if len(blocking_cells) < 2:
+            return False
+
         if use_height:
             for block in blocking_cells:
-                if not position_a.get_height() < block.get_height() \
-                  or not position_b.get_height() < block.get_height():
+                if position_a.get_height() >= block.get_height() \
+                  or position_b.get_height() >= block.get_height():
                     return False
             return True
         else:
-            return len(blocking_cells) >= 2
+            return True
 
     def is_path_valid(self, cell, path, game_board, use_height=False):
         top_piece = cell.remove_piece()
@@ -82,9 +90,3 @@ class Piece:
                 return False
         cell.add_piece(top_piece)
         return True
-
-
-
-
-
-
