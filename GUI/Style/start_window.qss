@@ -3,7 +3,7 @@
         src: url('file://GUI/Fonts/Pridi-SemiBold.ttf');
     }
 QMainWindow {
-                background-image: url('GUI/Images/background.png');
+                background-image: url('../Images/background.png');
                 background-repeat: no-repeat;
                 background-position: center;
                 background-attachment: fixed;
