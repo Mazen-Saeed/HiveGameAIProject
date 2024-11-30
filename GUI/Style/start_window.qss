@@ -1,6 +1,6 @@
 @font-face {
         font-family: 'Pridi';
-        src: url('file://GUI/Fonts/Pridi-SemiBold.ttf');
+        src: url('GUI/Fonts/Pridi-Bold.ttf') format('truetype');
     }
 QMainWindow {
                 background-image: url('GUI/Images/background.png');
@@ -11,10 +11,11 @@ QMainWindow {
 QPushButton {
     font-family: 'Pridi';
     background-color: rgba(247, 181, 0, 0.8); /* F7B500 with 80% opacity */
-    border-radius: 20px; /* Rounded corners */
+    border-radius: 45px; /* Rounded corners */
     border: 1px solid white; /* White border with 1px thickness */
     color: white; /* Text color */
     padding: 10px 20px; /* Padding inside the button */
+    letter-spacing: 5px; /* Adjust letter spacing */
     
 }
 
@@ -29,4 +30,12 @@ QPushButton:pressed {
 
 QLabel {
     font-family: 'Pridi';
+}
+
+QLabel[class="hive-label"] {
+    color: #F7B500;
+}
+
+QLabel[class="game-label"] {
+    color: #FFF;
 }
