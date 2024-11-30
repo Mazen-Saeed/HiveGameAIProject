@@ -40,9 +40,9 @@ class StartWindow(QMainWindow):
         self.exit_button.clicked.connect(self.exit_clicked)
 
 
-        print(os.getcwd()) # for debugging 
-        # set style sheet for the application 
-        with open("GUI/Style/start_window.qss","r") as file:
+        print(os.getcwd()) # for debugging
+        # set style sheet for the application
+        with open("../Style/start_window.qss","r") as file:
             stylesheet = file.read()
             self.setStyleSheet(stylesheet)
 
