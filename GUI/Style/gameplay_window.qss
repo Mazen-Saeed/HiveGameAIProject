@@ -1,0 +1,10 @@
+QMainWindow {
+                background-image: url('Images/background.png');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-attachment: fixed;
+            }
+
+QLabel:hover {
+        border: 1px solid blue;  /* Blue border on hover */
+}

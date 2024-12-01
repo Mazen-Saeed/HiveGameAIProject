@@ -1,9 +1,9 @@
 @font-face {
         font-family: 'Pridi';
-        src: url('file://GUI/Fonts/Pridi-SemiBold.ttf');
+        src: url('file://Fonts/Pridi-SemiBold.ttf');
     }
 QMainWindow {
-                background-image: url('../Images/background.png');
+                background-image: url('Images/background.png');
                 background-repeat: no-repeat;
                 background-position: center;
                 background-attachment: fixed;

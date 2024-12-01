@@ -9,8 +9,8 @@ class StartWindow(QMainWindow):
         super(StartWindow,self).__init__()
 
         #load ui file
-        # print(os.getcwd()) # for debugging 
-        uic.loadUi("../UI/start_window.ui",self)
+        print(os.getcwd()) # for debugging
+        uic.loadUi("UI/start_window.ui",self)
 
 
         
@@ -31,7 +31,7 @@ class StartWindow(QMainWindow):
 
         print(os.getcwd()) # for debugging
         # set style sheet for the application
-        with open("../Style/start_window.qss","r") as file:
+        with open("Style/start_window.qss","r") as file:
             stylesheet = file.read()
             self.setStyleSheet(stylesheet)
 
