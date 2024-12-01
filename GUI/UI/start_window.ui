@@ -14,11 +14,7 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url('../Images/background.png');
-background-repeat: no-repeat;
-background-position: center;
-background-size: cover; 
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="hive_label">
@@ -163,7 +159,7 @@ background-size: cover;
       </font>
      </property>
      <property name="text">
-      <string>PLayer One</string>
+      <string>Player One</string>
      </property>
     </widget>
     <widget class="QPushButton" name="player_one_diff_button">
@@ -233,7 +229,7 @@ background-size: cover;
       </font>
      </property>
      <property name="text">
-      <string>PLayer Two</string>
+      <string>Player Two</string>
      </property>
     </widget>
     <widget class="QPushButton" name="player_two_diff_button">
