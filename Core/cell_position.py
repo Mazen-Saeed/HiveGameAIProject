@@ -53,14 +53,19 @@ class CellPosition:
             return self.pieces[-1]
         return None
 
-    def get_player(self):
+    def get_player_number(self):
         if self.pieces:
-            return self.pieces[-1].get_player()
+            return self.pieces[-1].get_player_number()
         return None
 
     def get_name(self):
         if self.pieces:
             return self.pieces[-1].get_name()
+        return None
+
+    def get_available_moves(self, game_board):
+        if self.pieces:
+            return self.get_top_piece().get_available_moves(self, game_board)
         return None
 
     def get_all_pieces(self):
@@ -158,15 +163,6 @@ class CellPosition:
         dfs([self])
         return all_paths
 
-    @staticmethod
-    def get_same_color_cells(board, player_color: int):
-        same_color = set()
-        for row in board:
-            for cell in row:
-                if cell.is_occupied() and cell.get_player() == player_color:
-                    same_color.add(cell)
-        return same_color
-
     def get_hive_from_cell(self, game_board, visited=None):
         if visited is None:
             visited = set()
@@ -177,18 +173,20 @@ class CellPosition:
                 neighbor.get_hive_from_cell(game_board, visited)
         return visited
 
-    @staticmethod
-    def get_hive(game_board):
-        board = CellPosition.get_board_as_iterable_list(game_board)
-        hive = [position for position in board if position.is_occupied()]
-        return hive
-
     def is_a_bridge(self, game_board):
-        neighbors = set(self.get_occupied_neighbors(game_board))
+        neighbors = self.get_occupied_neighbors(game_board)
         tested_piece = self.remove_piece()
 
-        rest_of_hive = self.get_hive_from_cell(game_board)
+        rest_of_hive = neighbors[0].get_hive_from_cell(game_board)
 
         self.add_piece(tested_piece)
+        print("NEIGHS: ", neighbors)
+        print("REST:", rest_of_hive)
+        return bool(set(neighbors).difference(rest_of_hive))
 
-        return bool(neighbors.difference(rest_of_hive))
+    # TODO: delete this
+    # @staticmethod
+    # def get_hive(game_board):
+    #     board = CellPosition.get_board_as_iterable_list(game_board)
+    #     hive = [position for position in board if position.is_occupied()]
+    #     return hive

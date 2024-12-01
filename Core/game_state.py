@@ -13,11 +13,12 @@ class GameState:
 
     def _initialize_state(self, player1Type, player2Type, player1Level, player2Level):
         self.state = CellPosition.create_board() # Reset grid state
-        self.players = [Player(1, player1Type, player1Level),Player(2, player2Type, player2Level)]
+        # TODO: playerWon
+        self.players = [Player(0, player1Type, player1Level), Player(1, player2Type, player2Level)]
         self.turn = 0  # Reset turn to player 1 (0 >> player 1 and 1 >> player 2)
         self.current_allowed_moves = {}
         self.current_allowed_placements = set()
-        self.playerWon = 0  # 1 if player 1 win and 2 if player 2 win
+        self.playerWon = -1  # 0 if player 1 win and 1 if player 2 win
 
     def make_a_move(self):
         """
@@ -51,7 +52,8 @@ class GameState:
         if self.current_allowed_placements:
             return self.current_allowed_placements
 
-        self.current_allowed_placements =  Piece(self.turn).get_available_placements(self.state)
+        self.current_allowed_placements =  Piece.get_available_placements(self.players[self.turn], self.state)
+
         return self.current_allowed_placements
 
 
@@ -88,25 +90,27 @@ class GameState:
         :param cell: CellPosition representing the cell to check.
         :return: True if the cell is occupied by the current player's piece, False otherwise.
         """
-        return cell.is_occupied() and cell.get_player() == self.turn
+        return cell.is_occupied() and cell.get_player_number() == self.turn
 
-    def is_this_cell_ok(self, cell: CellPosition,piece:Piece):
+    def is_this_cell_ok(self, to_cell: CellPosition, piece:Piece=None, from_cell:CellPosition=None):
         """
         Checks if the given cell is part of the allowed moves for the current player.
-        use it after a player chooses a cell to place or move a piece to it
-        :param piece: should be None if it's a placement and piece if it's a move
-        :param cell: CellPosition representing the cell to check.
-        :return: true if the cell is in the list of current allowed moves, False otherwise.
+        use it after a player chooses a piece to place or chooses a cell to move a piece to it.
+
+        :param to_cell: The CellPosition the player is moving to/placing at
+        :param piece: The piece the player is placing on the board, should be None if it's a move
+        :param from_cell: CellPosition representing the cell the user will move to, None if it's a placement.
+        :return: True if the cell is in the list of current allowed moves, False otherwise.
         """
-        if piece is None:
-            return cell in self.current_allowed_placements
+        if piece:
+            return to_cell in self.current_allowed_placements
         else:
-            return cell in self.current_allowed_moves[piece]
+            return (from_cell) and (from_cell in self.current_allowed_moves) and (to_cell in self.current_allowed_moves[from_cell])
 
     def is_the_piece_available(self,piece):
         """
         Checks if the piece selected to be played is available for the player or not.
-        :param piece: The piece to check availability for (e.g., "g1", "a2", etc.)
+        :param piece: The piece to check availability for (e.g., "Grasshopper(0)", "Ant(1)", etc.)
         :return: True if the piece is available, False otherwise.
         """
         return self.players[self.turn].unplaced_pieces.is_this_piece_available(piece)
@@ -122,9 +126,9 @@ class GameState:
         which is a winning condition in the game.
 
         :return:
-        - 1 if player 1 wins (player 1's queen bee is surrounded),
-        - 2 if player 2 wins (player 2's queen bee is surrounded),
-        - 0 if no player has won yet (both queen bees are not surrounded).
+        - 0 if player 1 wins (player 1's queen bee is surrounded),
+        - 1 if player 2 wins (player 2's queen bee is surrounded),
+        - -1 if no player has won yet (both queen bees are not surrounded).
         """
         for player in self.players:
             queen = player.get_queen()  # Access the current player's queen
@@ -137,19 +141,25 @@ class GameState:
 
             if all_queen_neighbors_occupied:
                 player_number = player.get_player_number()
-                player_who_won = - player_number + 3
-                return player_who_won # Return the winning player number (1 or 2)
+                player_who_won = 1 - player_number
+                self.playerWon = player_who_won
+                return player_who_won # Return the winning player number (0 or 1)
 
-        return 0  # No player has won yet
+        return -1  # No player has won yet
 
-    def update_state(self, piece: Piece, to_cell: CellPosition, from_cell: CellPosition = None):
+    def reset_for_new_turn(self):
+        self.turn = 1 - self.turn
+        self.current_allowed_moves = dict()
+        self.current_allowed_placements = set()
+
+    def update_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None):
         """
         Updates the game state after a move, including the position of the piece and any necessary changes
         to the turn, move count, and available pieces.
 
-        :param piece: The piece being moved (e.g., a Queen Bee, Ant, Grasshopper, etc.)
-        :param from_cell: The cell from which the piece is moving
-        :param to_cell: The cell to which the piece is moving
+        :param to_cell: The cell to which the piece is placing/moving
+        :param piece: The piece being placed (e.g., a Queen Bee, Ant, Grasshopper, etc.), None if player is moving a piece
+        :param from_cell: The cell from which the piece is moving, None if the player is placing a piece
         :return: None
         """
         if from_cell:
@@ -159,16 +169,22 @@ class GameState:
         if isinstance(piece, Queen):
             self.players[self.turn].set_queen(to_cell)
 
-        if not from_cell:
-            self.players[self.turn].update_available_pieces(piece,to_cell)
+        self.players[self.turn].update_available_pieces(from_cell, to_cell)
 
         self.players[self.turn].moves_count += 1
-
-        self.turn = 1 - self.turn
-
-        self.current_allowed_moves = {}
-        self.current_allowed_placements = set()
+        self.reset_for_new_turn()
 
     def player_allowed_to_play(self):
+        """
+        Computes every available placement and move for a player, and returns a boolean. True if
+        the player can perform his turn (a placement or a move), False otherwise.
+
+        :return: bool
+        """
         self.current_allowed_placements = self.get_allowed_cells()
-        return self.current_allowed_placements or self.players[self.turn].is_there_allowed_moves_for_player(self.state,self.current_allowed_moves)
+        # updates current allowed moves by reference
+        self.players[self.turn].is_there_allowed_moves_for_player(self.state, self.current_allowed_moves)
+        result = self.current_allowed_placements or self.current_allowed_moves
+        if not result:
+            self.reset_for_new_turn()
+        return result
