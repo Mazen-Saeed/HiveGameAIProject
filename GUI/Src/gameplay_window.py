@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QPushButton
+from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QPushButton, QFrame, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont
 from PyQt5 import uic
 import sys
 import os
 
 from GUI.Src.ClickableLabel import ClickableLabel
+from GUI.Src.HexaGrid import CustomHexagonalGrid
 
 
 class GameplayWindow(QMainWindow):
@@ -42,8 +43,10 @@ class GameplayWindow(QMainWindow):
         self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
         self.white_bee = self.findChild(ClickableLabel, "white_bee")
 
+        #Grid
+        self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
 
-
+        self.creatGrid()
         # connect signal and slot
 
         # connect tiles
@@ -59,10 +62,17 @@ class GameplayWindow(QMainWindow):
     def clicker(self,tile: ClickableLabel):
         if not tile.pressed:
             tile.pressed = True
-            tile.setStyleSheet("border: 1px solid blue;")
+            tile.setStyleSheet("border: 2px solid aqua;")
         else:
             tile.pressed = False
-            tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 1px solid blue; }")
+            tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 2px solid aqua; }")
+
+    def creatGrid(self):
+        hex_size = 30  # Adjust the size of the hexagons as needed
+        self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
+
+        layout = QVBoxLayout(self.grid_placeholder)
+        layout.addWidget(self.hex_grid)
 
 # TODO
 # adjust hexagonal shape if border if can be done

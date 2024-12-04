@@ -6,5 +6,17 @@ QMainWindow {
             }
 
 QLabel:hover {
-        border: 1px solid blue;  /* Blue border on hover */
+        border: 2px solid cyan;  /* Blue border on hover */
+}
+
+QFrame {
+    background: transparent;
+    border: transparent;
+}
+CustomHexagonalGrid {
+    background: transparent;
+}
+
+QPushButton {
+    background: black;
 }
