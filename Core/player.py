@@ -33,14 +33,15 @@ class AvailablePieces:
 class Player:
     def __init__(self, player_number,player_type,player_level):
         self.unplaced_pieces = AvailablePieces(player_number)
-        self.placed_pieces = {}
+        self.placed_pieces = set()
         self.player_type = player_type
         self.player_number = player_number
         self.player_level = player_level # e for easy, m for medium, h for hard, p if player
         self.moves_count = 0
         self.player_won = False
         self.queen = None
-
+    def __repr__(self):
+        return "(Pieces: " + str(self.unplaced_pieces) + ", Queen: " + str(self.queen) + ")"
     def get_level(self):
         return self.player_level
 
@@ -50,27 +51,37 @@ class Player:
     def get_player_number(self):
         return self.player_number
 
+    def get_placed_pieces(self):
+        return self.placed_pieces
+
     def get_queen(self):
         return self.queen
 
     def queen_unplaced(self):
-        return Queen(self.player_number) in self.unplaced_pieces
+        return self.get_queen()
 
-    def set_queen(self,cell: CellPosition):
+    def set_queen(self, cell: CellPosition):
         self.queen = cell
 
-    def update_available_pieces(self,piece,cell):
-        self.unplaced_pieces.update(piece)
-        self.placed_pieces[piece] = cell
+    def update_available_pieces(self, from_cell, to_cell):
+        # Make sure this is called AFTER the piece is moved in GameState.update_state()
+        # bad design
+        # but oh well
+        if not from_cell:
+            self.unplaced_pieces.update(to_cell.get_top_piece())
+        else:
+            self.placed_pieces.remove(from_cell)
+        self.placed_pieces.add(to_cell)
 
-    def is_there_allowed_moves_for_player(self, board_state,current_allowed_moves):
+    def is_there_allowed_moves_for_player(self, board_state, current_allowed_moves):
         found_moves = False
-        for piece, cell in self.placed_pieces.items():
-            available_moves = piece.get_available_moves(cell, board_state)
+        if not self.get_queen():
+            return found_moves
+        print("PLACED PIECES FROM PLAYER: ", self.placed_pieces)
+        for from_cell in self.placed_pieces:
+            available_moves = from_cell.get_available_moves(board_state)
             if available_moves:
-                current_allowed_moves[piece] = available_moves
+                current_allowed_moves[from_cell] = available_moves
                 found_moves = True
 
         return found_moves
-
-

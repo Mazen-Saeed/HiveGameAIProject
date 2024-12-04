@@ -17,4 +17,4 @@ class Queen(Piece):
         available_positions.update([path[-1] for path in available_paths])
         return available_positions
 
-
+    

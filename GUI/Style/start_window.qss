@@ -8,21 +8,23 @@ QMainWindow {
                 background-position: center;
                 background-attachment: fixed;
             }
-QPushButton {
+
+QPushButton[class = "game_options"] {
     font-family: 'Pridi';
     background-color: rgba(247, 181, 0, 0.8); /* F7B500 with 80% opacity */
-    border-radius: 20px; /* Rounded corners */
+    border-radius: 45px; /* Rounded corners */
     border: 1px solid white; /* White border with 1px thickness */
     color: white; /* Text color */
     padding: 10px 20px; /* Padding inside the button */
-    
+    letter-spacing: 5px; /* Adjust letter spacing */
+
 }
 
-QPushButton:hover {
+QPushButton[class = "game_options"]:hover {
     background-color: rgba(247, 181, 0, 1); /* Fully opaque yellow on hover */
 }
 
-QPushButton:pressed {
+QPushButton[class = "game_options"]:pressed {
     background-color: rgba(247, 181, 0, 0.6); /* Slightly darker yellow when pressed */
 }
 
@@ -30,3 +32,42 @@ QPushButton:pressed {
 QLabel {
     font-family: 'Pridi';
 }
+
+QLabel[class="hive-label"] {
+    color: #F7B500;
+}
+
+QLabel[class="game-label"] {
+    color: #FFF;
+}
+QFrame[class = "players_option"] {
+    background: rgba(26, 45, 14, 0.8);
+    border-radius: 20px; /* Rounded corners */
+    border: 2px solid #60463E;
+}
+
+QLabel[class="players_label"] {
+    color: #FFF;
+}
+
+QPushButton[class="player_buttons"] {
+    background: qlineargradient(
+        x1: 0, y1: 0,
+        x2: 1, y2: 0,
+        stop: 0 rgba(0,0,0,0.8),
+        stop: 1 rgba(14, 45, 41, 0.8)
+    );
+    border-radius: 30px;
+    color: white;
+    border: 1px solid #FFF;
+}
+
+QPushButton[class="player_buttons"]:hover {
+    background: qlineargradient(
+        x1: 0, y1: 0,
+        x2: 1, y2: 0,
+        stop: 0 rgba(0,0,0,1),
+        stop: 1 rgba(14, 45, 41, 1)
+    );
+}
+

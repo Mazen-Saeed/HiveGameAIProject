@@ -14,25 +14,24 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-image: url('../Images/background.png');
-background-repeat: no-repeat;
-background-position: center;
-background-size: cover; 
-</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="hive_label">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>320</x>
       <y>150</y>
-      <width>491</width>
+      <width>381</width>
       <height>198</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>128</pointsize>
+      <family>Purisa</family>
+      <pointsize>100</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -58,15 +57,18 @@ background-size: cover;
    <widget class="QLabel" name="game_label">
     <property name="geometry">
      <rect>
-      <x>1220</x>
-      <y>140</y>
-      <width>561</width>
+      <x>1217</x>
+      <y>154</y>
+      <width>481</width>
       <height>198</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <pointsize>128</pointsize>
+      <family>Purisa</family>
+      <pointsize>100</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="text">
@@ -108,6 +110,146 @@ background-size: cover;
     <property name="text">
      <string>Exit</string>
     </property>
+   </widget>
+   <widget class="QFrame" name="player_one_frame">
+    <property name="geometry">
+     <rect>
+      <x>307</x>
+      <y>487</y>
+      <width>350</width>
+      <height>350</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="player_one_type_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>132</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AI</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="player_one_label">
+     <property name="geometry">
+      <rect>
+       <x>71</x>
+       <y>38</y>
+       <width>221</width>
+       <height>54</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Player One</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="player_one_diff_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>252</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Easy</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="player_two_frame">
+    <property name="geometry">
+     <rect>
+      <x>1286</x>
+      <y>472</y>
+      <width>350</width>
+      <height>350</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="player_two_type_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>132</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Human</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="player_two_label">
+     <property name="geometry">
+      <rect>
+       <x>71</x>
+       <y>38</y>
+       <width>221</width>
+       <height>54</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Player Two</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="player_two_diff_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>252</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Easy</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>

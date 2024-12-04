@@ -2,3 +2,6 @@
 2- Handle actual full-game logic (maybe, this might be up to GUI?).
 3- optimise maybe. Everything in rules (piece.py, cell_position.py, game_state.py) is currently brute-forced.
 4- anything that loops over all cells should be optimised to only loop on placed pieces of a player.
+
+5- declutter game state
+GAME STATE INTERFACE CHANGE NOTIFICATION?
