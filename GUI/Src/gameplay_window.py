@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QPushButton, QFrame, QVBoxLayout, QWidget
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5 import uic
 import sys
 import os
@@ -15,6 +15,8 @@ class GameplayWindow(QMainWindow):
         # load ui file
         print(os.getcwd())  # for debugging
         uic.loadUi("UI/gameplay_window.ui", self)
+
+        self.load_font_needed()
 
         # catch UI element from ui file
         # Black player tiles
@@ -42,6 +44,10 @@ class GameplayWindow(QMainWindow):
         self.white_spider_1 = self.findChild(ClickableLabel, "white_spider_1")
         self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
         self.white_bee = self.findChild(ClickableLabel, "white_bee")
+
+        #game status label
+        self.game_status_label = self.findChild(QLabel, "game_status_label")
+        self.game_status_label.setProperty("class", "game_status_label")
 
         #Grid
         self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
@@ -73,6 +79,14 @@ class GameplayWindow(QMainWindow):
 
         layout = QVBoxLayout(self.grid_placeholder)
         layout.addWidget(self.hex_grid)
+
+    def load_font_needed(self):
+        font_id = QFontDatabase.addApplicationFont("Fonts/Pridi-SemiBold.ttf")
+        if font_id == -1:
+            print("Failed to load the font.")
+        else:
+            font_family = QFontDatabase.applicationFontFamilies(font_id)[0]
+            print(f"Loaded font: {font_family}")
 
 # TODO
 # adjust hexagonal shape if border if can be done

@@ -1,3 +1,8 @@
+@font-face {
+        font-family: 'Pridi';
+        src: url('file://Fonts/Pridi-SemiBold.ttf');
+    }
+
 QMainWindow {
                 background-image: url('Images/background.png');
                 background-repeat: no-repeat;
@@ -5,7 +10,7 @@ QMainWindow {
                 background-attachment: fixed;
             }
 
-QLabel:hover {
+ClickableLabel:hover {
         border: 2px solid cyan;  /* Blue border on hover */
 }
 
@@ -13,10 +18,25 @@ QFrame {
     background: transparent;
     border: transparent;
 }
+
 CustomHexagonalGrid {
     background: transparent;
 }
 
 QPushButton {
     background: black;
+}
+
+QLabel {
+    font-family: 'Pridi';
+    color: white;
+}
+
+QLabel[class="game_status_label"] {
+    background: qlineargradient(
+        x1: 0, y1: 0,
+        x2: 1, y2: 0,
+        stop: 0 rgba(0,0,0,0.5),
+        stop: 1 rgba(6, 38, 21, 1)
+    );
 }
