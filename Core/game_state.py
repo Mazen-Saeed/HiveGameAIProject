@@ -23,7 +23,6 @@ class GameState:
     def make_a_move(self):
         """
         Makes a move for the current player in case of a computer using the AI algorithms.
-        should output 2 pairs (from_cell and to_cell)
         """
         if self.players[self.turn].get_level() == "e":
             # use MinMaxAI
