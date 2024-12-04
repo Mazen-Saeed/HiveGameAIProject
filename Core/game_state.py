@@ -134,7 +134,6 @@ class GameState:
         """
         player_1_surrounded = self.is_the_queen_surrounded(self.players[0].get_queen())
         player_2_surrounded = self.is_the_queen_surrounded(self.players[1].get_queen())
-
         if player_1_surrounded and player_2_surrounded:
             return 2  # Draw (both queens are surrounded)
         elif player_1_surrounded:
