@@ -18,7 +18,7 @@ class GameState:
         self.turn = 0  # Reset turn to player 1 (0 >> player 1 and 1 >> player 2)
         self.current_allowed_moves = {}
         self.current_allowed_placements = set()
-        self.playerWon = -1  # 0 if player 1 win and 1 if player 2 win
+        self.playerWon = -1  # 0 if player 1, 1 if player 2 win, 2 if draw, -1 if game in progress
 
     def make_a_move(self):
         """
@@ -115,33 +115,34 @@ class GameState:
         """
         return self.players[self.turn].unplaced_pieces.is_this_piece_available(piece)
 
+    def is_the_queen_surrounded(self, queen):
+        if queen is None:
+            return False
+
+        queen_neighbors = queen.get_neighbors(self.state)  # Get the neighbors of the queen
+        return all(neighbor.is_occupied() for neighbor in queen_neighbors)  # Check if all neighbors are occupied
+
     def check_for_a_winner(self):
         """
-        Checks if either player's queen has all of its neighboring cells occupied,
-        which is a winning condition in the game.
-
+        Checks if either player's queen is surrounded, determining the winner,
+        draw, or if the game is still in progress.
         :return:
-        - 0 if player 1 wins (player 1's queen bee is surrounded),
-        - 1 if player 2 wins (player 2's queen bee is surrounded),
-        - 2 if draw
-        - -1 if no player has won yet (both queen bees are not surrounded).
+        - 0 if player 1 wins (player 2's queen is surrounded),
+        - 1 if player 2 wins (player 1's queen is surrounded),
+        - 2 if draw (both queens are surrounded),
+        - -1 if no player has won yet (game still in progress).
         """
-        for player in self.players:
-            queen = player.get_queen()  # Access the current player's queen
-            if queen is None:
-                continue  # If the player doesn't have their queen placed yet, skip to the next player
+        player_1_surrounded = self.is_the_queen_surrounded(self.players[0].get_queen())
+        player_2_surrounded = self.is_the_queen_surrounded(self.players[1].get_queen())
 
-            queen_neighbors = queen.get_neighbors(self.state)  # Get the neighbors of the queen
-            all_queen_neighbors_occupied = all(
-                neighbor.is_occupied() for neighbor in queen_neighbors)  # Check if all neighbors are occupied
-
-            if all_queen_neighbors_occupied:
-                player_number = player.get_player_number()
-                player_who_won = 1 - player_number
-                self.playerWon = player_who_won
-                return player_who_won # Return the winning player number (0 or 1)
-
-        return -1  # No player has won yet
+        if player_1_surrounded and player_2_surrounded:
+            return 2  # Draw (both queens are surrounded)
+        elif player_1_surrounded:
+            return 1  # Player 2 wins (player 1's queen is surrounded)
+        elif player_2_surrounded:
+            return 0  # Player 1 wins (player 2's queen is surrounded)
+        else:
+            return -1  # No one has won yet (game still in progress)
 
     def reset_for_new_turn(self):
         self.turn = 1 - self.turn
