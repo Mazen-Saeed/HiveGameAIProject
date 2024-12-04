@@ -20,17 +20,234 @@
    </size>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="gridLayoutWidget">
+   <widget class="QFrame" name="grid_placeholder">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>370</y>
-      <width>331</width>
-      <height>551</height>
+      <x>140</x>
+      <y>110</y>
+      <width>1631</width>
+      <height>861</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="home_button">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>30</y>
+      <width>81</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Images/home button.png</normaloff>../Images/home button.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="restart_button">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>30</y>
+      <width>81</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../Images/reload button.png</normaloff>../Images/reload button.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>50</width>
+      <height>50</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>1790</x>
+      <y>50</y>
+      <width>102</width>
+      <height>901</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="ClickableLabel" name="white_ant_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Ant.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_ant_3">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Ant.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_ant_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Ant.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_grasshopper_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Grasshopper.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_grasshopper_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Grasshopper.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_grasshopper_3">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Grasshopper.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_beetle_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Beetle.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_beetle_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Beetle.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_spider_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Spider.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_spider_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Spider.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ClickableLabel" name="white_bee">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Bee.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>102</width>
+      <height>901</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
       <widget class="ClickableLabel" name="black_ant_2">
        <property name="text">
         <string/>
@@ -38,92 +255,12 @@
        <property name="pixmap">
         <pixmap>../Images/Black Ant.png</pixmap>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="ClickableLabel" name="black_grasshopper_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Grasshopper.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="ClickableLabel" name="black_grasshopper_3">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Grasshopper.png</pixmap>
-       </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="ClickableLabel" name="black_beetle_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Beetle.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="ClickableLabel" name="black_spider_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Spider.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="ClickableLabel" name="black_spider_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Spider.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="ClickableLabel" name="black_grasshopper_2">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Grasshopper.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="ClickableLabel" name="black_beetle_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Black Beetle.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="ClickableLabel" name="black_bee">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/Blace Bee.png</pixmap>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
+     <item>
       <widget class="ClickableLabel" name="black_ant_1">
        <property name="text">
         <string/>
@@ -131,9 +268,12 @@
        <property name="pixmap">
         <pixmap>../Images/Black Ant.png</pixmap>
        </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
-     <item row="0" column="2">
+     <item>
       <widget class="ClickableLabel" name="black_ant_3">
        <property name="focusPolicy">
         <enum>Qt::NoFocus</enum>
@@ -154,162 +294,111 @@
         <pixmap>../Images/Black Ant.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="gridLayoutWidget_2">
-    <property name="geometry">
-     <rect>
-      <x>1530</x>
-      <y>370</y>
-      <width>331</width>
-      <height>551</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_2">
-     <item row="0" column="1">
-      <widget class="ClickableLabel" name="white_ant_2">
+     <item>
+      <widget class="ClickableLabel" name="black_grasshopper_3">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Ant.png</pixmap>
+        <pixmap>../Images/Black Grasshopper.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="ClickableLabel" name="white_grasshopper_1">
+     <item>
+      <widget class="ClickableLabel" name="black_grasshopper_2">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Grasshopper.png</pixmap>
+        <pixmap>../Images/Black Grasshopper.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="ClickableLabel" name="white_grasshopper_3">
+     <item>
+      <widget class="ClickableLabel" name="black_grasshopper_1">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Grasshopper.png</pixmap>
+        <pixmap>../Images/Black Grasshopper.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="ClickableLabel" name="white_beetle_2">
+     <item>
+      <widget class="ClickableLabel" name="black_beetle_2">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Beetle.png</pixmap>
+        <pixmap>../Images/Black Beetle.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="0">
-      <widget class="ClickableLabel" name="white_spider_1">
+     <item>
+      <widget class="ClickableLabel" name="black_beetle_1">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Spider.png</pixmap>
+        <pixmap>../Images/Black Beetle.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="3" column="1">
-      <widget class="ClickableLabel" name="white_spider_2">
+     <item>
+      <widget class="ClickableLabel" name="black_spider_2">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Spider.png</pixmap>
+        <pixmap>../Images/Black Spider.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <widget class="ClickableLabel" name="white_ant_3">
+     <item>
+      <widget class="ClickableLabel" name="black_spider_1">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Ant.png</pixmap>
+        <pixmap>../Images/Black Spider.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="ClickableLabel" name="white_grasshopper_2">
+     <item>
+      <widget class="ClickableLabel" name="black_bee">
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/White Grasshopper.png</pixmap>
+        <pixmap>../Images/Blace Bee.png</pixmap>
        </property>
        <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="ClickableLabel" name="white_beetle_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/White Beetle.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="ClickableLabel" name="white_bee">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/White Bee.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="ClickableLabel" name="white_ant_1">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/White Ant.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
       </widget>
      </item>
