@@ -115,11 +115,6 @@ class GameState:
         """
         return self.players[self.turn].unplaced_pieces.is_this_piece_available(piece)
 
-
-    def player_allowed_to_move(self):
-        return self.players[self.turn].get_queen() is not None
-
-
     def check_for_a_winner(self):
         """
         Checks if either player's queen has all of its neighboring cells occupied,
@@ -128,6 +123,7 @@ class GameState:
         :return:
         - 0 if player 1 wins (player 1's queen bee is surrounded),
         - 1 if player 2 wins (player 2's queen bee is surrounded),
+        - 2 if draw
         - -1 if no player has won yet (both queen bees are not surrounded).
         """
         for player in self.players:
@@ -151,6 +147,7 @@ class GameState:
         self.turn = 1 - self.turn
         self.current_allowed_moves = dict()
         self.current_allowed_placements = set()
+
 
     def update_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None):
         """
