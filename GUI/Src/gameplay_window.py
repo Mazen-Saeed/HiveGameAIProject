@@ -68,7 +68,7 @@ class GameplayWindow(QMainWindow):
             tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 2px solid aqua; }")
 
     def creatGrid(self):
-        hex_size = 30  # Adjust the size of the hexagons as needed
+        hex_size = 35  # Adjust the size of the hexagons as needed
         self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
 
         layout = QVBoxLayout(self.grid_placeholder)

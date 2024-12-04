@@ -16,6 +16,7 @@ class CustomHexagonalGrid(QGraphicsView):
         self.grid_shape = [(row, col) for row in range(50) for col in range(50)]
         self.setRenderHint(0x01)  # Anti-aliasing
         self.draw_custom_grid()
+        self.center_on_middle_cell()
 
     def create_hexagon(self, center_x, center_y):
         """Creates a hexagon centered at (center_x, center_y)."""
@@ -41,3 +42,16 @@ class CustomHexagonalGrid(QGraphicsView):
             hexagon = self.create_hexagon(x_offset, y_offset)
             hex_item = ClickableHexagon(hexagon,row,col)
             self.scene.addItem(hex_item)
+
+    def center_on_middle_cell(self):
+        """Centers the viewport on the middle cell (25, 25)."""
+        # Calculate the center position of cell (25, 25)
+        col = 25
+        row = 25
+        center_x = col * (self.hex_size * 3.6 / 2)
+        center_y = row * (self.hex_size * math.sqrt(2.5))
+        if col % 2 == 1:  # Account for offset in odd columns
+            center_y += self.hex_size * math.sqrt(3) / 2
+
+        # Center the view on this position
+        self.centerOn(center_x, center_y)

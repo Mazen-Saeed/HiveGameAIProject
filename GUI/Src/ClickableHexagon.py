@@ -11,7 +11,7 @@ class ClickableHexagon(QGraphicsPolygonItem):
         self.row = row
         self.col = col
         self.setAcceptHoverEvents(True)  # Allow hover events
-        self.setPen(QPen(QColor("transparent"), 2))  # Default border color
+        self.setPen(QPen(QColor("cyan"), 2))  # Default border color
         self.default_brush = QColor("white")
         self.hover_brush = QColor("lightblue")
         self.selected_brush = QColor("yellow")
