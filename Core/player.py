@@ -33,7 +33,7 @@ class AvailablePieces:
 class Player:
     def __init__(self, player_number,player_type,player_level):
         self.unplaced_pieces = AvailablePieces(player_number)
-        self.placed_pieces = set()
+        self.placed_pieces = list()
         self.player_type = player_type
         self.player_number = player_number
         self.player_level = player_level # e for easy, m for medium, h for hard, p if player
@@ -52,7 +52,8 @@ class Player:
         return self.player_number
 
     def get_placed_pieces(self):
-        return self.placed_pieces
+        placed_pieces = {piece for piece in self.placed_pieces if piece.get_player_number() == self.get_player_number()}
+        return placed_pieces
 
     def get_queen(self):
         return self.queen
@@ -71,14 +72,15 @@ class Player:
             self.unplaced_pieces.update(to_cell.get_top_piece())
         else:
             self.placed_pieces.remove(from_cell)
-        self.placed_pieces.add(to_cell)
+        self.placed_pieces.append(to_cell)
 
     def is_there_allowed_moves_for_player(self, board_state, current_allowed_moves):
         found_moves = False
         if not self.get_queen():
             return found_moves
-        print("PLACED PIECES FROM PLAYER: ", self.placed_pieces)
-        for from_cell in self.placed_pieces:
+
+        placed_pieces = self.get_placed_pieces()
+        for from_cell in placed_pieces:
             available_moves = from_cell.get_available_moves(board_state)
             if available_moves:
                 current_allowed_moves[from_cell] = available_moves

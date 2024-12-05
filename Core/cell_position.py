@@ -180,8 +180,6 @@ class CellPosition:
         rest_of_hive = neighbors[0].get_hive_from_cell(game_board)
 
         self.add_piece(tested_piece)
-        print("NEIGHS: ", neighbors)
-        print("REST:", rest_of_hive)
         return bool(set(neighbors).difference(rest_of_hive))
 
     # TODO: delete this
