@@ -21,18 +21,19 @@ class GameState:
         self.playerWon = -1  # 0 if player 1, 1 if player 2 win, 2 if draw, -1 if game in progress
 
     def make_a_move(self):
-        """
-        Makes a move for the current player in case of a computer using the AI algorithms.
-        """
         if self.players[self.turn].get_level() == "e":
-            # use MinMaxAI
-            pass
+            ai = MinMaxAI(depth=2)
+            best_move = ai.min_max(self, ai.depth, True)
         elif self.players[self.turn].get_level() == "m":
-            # use AlphaBetaPruningAI
-            pass
+            ai = AlphaBetaPruningAI(depth=3)
+            best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         else:
-            # use AlphaBetaPruningWithIterativeDeepeningAI
-            pass
+            ai = AlphaBetaPruningAI(depth=5)  # Higher depth for hard level
+            best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
+
+        # Perform the best move
+        from_cell, to_cell, piece = best_move
+        return from_cell, to_cell, piece
 
     def get_allowed_cells(self):
         """
