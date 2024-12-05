@@ -1,83 +1,108 @@
-import copy
-import math
-
-
 class MinMaxAI:
-    def __init__(self, max_depth):
-        self.max_depth = max_depth
+    def __init__(self, depth=3):
+        self.depth = depth
 
-    def evaluate_game_state(self, game_state):
+
+    def clone(self):
+    """
+    Creates a deep copy of the game state for simulation purposes.
+    """
+    import copy
+    return copy.deepcopy(self)
+
+
+    def evaluate(self, game_state):
         """
-        Evaluates the game state and assigns a heuristic score.
-        :param game_state: The current game state.
-        :return: A numerical score.
+        Heuristic evaluation of the game state.
         """
-        winner = game_state.check_for_a_winner()
-        if winner == "p1":
-            return math.inf  # Maximizing player wins
-        elif winner == "p2":
-            return -math.inf  # Minimizing player wins
+        player = game_state.players[game_state.turn]
+        opponent = game_state.players[1 - game_state.turn]
+
+        # Example heuristic: number of placed pieces and queen safety
+        score = len(player.placed_pieces) - len(opponent.placed_pieces)
+        if player.get_queen() and game_state.is_the_queen_surrounded(player.get_queen()):
+            score -= 100
+        if opponent.get_queen() and game_state.is_the_queen_surrounded(opponent.get_queen()):
+            score += 100
+
+        return score
+
+    def get_all_possible_moves(self, game_state):
+        """
+        Generate all valid moves for the current player.
+        """
+        possible_moves = []
+
+        # Placement moves
+        for cell in game_state.current_allowed_placements:
+            for piece in game_state.players[game_state.turn].unplaced_pieces:
+                possible_moves.append((None, cell, piece))  # Placement move
+
+        # Movement moves
+        for from_cell, to_cells in game_state.current_allowed_moves.items():
+            for to_cell in to_cells:
+                piece = from_cell.get_top_piece()
+                possible_moves.append((from_cell, to_cell, piece))  # Movement move
+
+        return possible_moves
+
+    def min_max(self, game_state, depth, maximizing_player):
+        if depth == 0 or game_state.check_for_a_winner() != -1:
+            return self.evaluate(game_state)
+
+        if maximizing_player:
+            max_eval = float('-inf')
+            best_move = None
+            for move in self.get_all_possible_moves(game_state):
+                cloned_state = game_state.clone()
+                cloned_state.update_state(*move)
+                eval = self.min_max(cloned_state, depth - 1, False)
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
+            return best_move if depth == self.depth else max_eval
         else:
-            # Heuristic: Favor states with more moves for player 1 and fewer for player 2
-            return len(game_state.get_allowed_cells()) if game_state.turn == 1 else -len(game_state.get_allowed_cells())
-
-    def get_possible_moves(self, game_state):
-        """
-        Generate all possible moves for the current player.
-        :param game_state: The current game state.
-        :return: A list of (piece, from_cell, to_cell) tuples representing possible moves.
-        """
-        moves = []
-        allowed_cells = game_state.get_allowed_cells()
-
-        for from_cell in allowed_cells:
-            piece = game_state.state[from_cell.r][from_cell.q]
-            allowed_destinations = game_state.get_allowed_cells_given_the_piece_on_cell(from_cell)
-            for to_cell in allowed_destinations:
-                moves.append((piece, from_cell, to_cell))
-
-        return moves
-
-    def min_max(self, game_state, depth, is_maximizing):
-        """
-        Recursive implementation of the Min-Max algorithm.
-        :param game_state: The current game state.
-        :param depth: The current depth of the recursion.
-        :param is_maximizing: Whether the current layer is maximizing or minimizing.
-        :return: A tuple of (best_score, best_move).
-        """
-        if depth == 0 or game_state.check_for_a_winner() != "c":
-            return self.evaluate_game_state(game_state), None
-
-        best_score = -math.inf if is_maximizing else math.inf
-        best_move = None
-
-        for move in self.get_possible_moves(game_state):
-            piece, from_cell, to_cell = move
-
-            # Simulate the move
-            new_game_state = copy.deepcopy(game_state)
-            new_game_state.update_state(piece, from_cell, to_cell)
-
-            # Recurse
-            score, _ = self.min_max(new_game_state, depth - 1, not is_maximizing)
-
-            if is_maximizing:
-                if score > best_score:
-                    best_score = score
+            min_eval = float('inf')
+            best_move = None
+            for move in self.get_all_possible_moves(game_state):
+                cloned_state = game_state.clone()
+                cloned_state.update_state(*move)
+                eval = self.min_max(cloned_state, depth - 1, True)
+                if eval < min_eval:
+                    min_eval = eval
                     best_move = move
-            else:
-                if score < best_score:
-                    best_score = score
+            return best_move if depth == self.depth else min_eval
+
+    def alpha_beta(self, game_state, depth, alpha, beta, maximizing_player):
+        if depth == 0 or game_state.check_for_a_winner() != -1:
+            return self.evaluate(game_state)
+
+        if maximizing_player:
+            max_eval = float('-inf')
+            best_move = None
+            for move in self.get_all_possible_moves(game_state):
+                cloned_state = game_state.clone()
+                cloned_state.update_state(*move)
+                eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, False)
+                if eval > max_eval:
+                    max_eval = eval
                     best_move = move
-
-        return best_score, best_move
-
-    def make_best_move(self, game_state):
-        """
-        Uses the Min-Max algorithm to make the best move for the current player.
-        :param game_state: The current game state.
-        :return: The chosen move.
-        """
-        _, best_move = self.min_max(game_state, self.max_depth, game_state.turn == 1)
-        return best_move
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+            return best_move if depth == self.depth else max_eval
+        else:
+            min_eval = float('inf')
+            best_move = None
+            for move in self.get_all_possible_moves(game_state):
+                cloned_state = game_state.clone()
+                cloned_state.update_state(*move)
+                eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, True)
+                if eval < min_eval:
+                    min_eval = eval
+                    best_move = move
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
+            return best_move if depth == self.depth else min_eval
+    
