@@ -2,7 +2,7 @@ import sys
 import math
 from PyQt5.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsPolygonItem
 from PyQt5.QtGui import QPolygonF, QPen, QColor
-from PyQt5.QtCore import QPointF
+from PyQt5.QtCore import QPointF , Qt
 
 from GUI.Src.ClickableHexagon import ClickableHexagon
 
@@ -17,6 +17,9 @@ class CustomHexagonalGrid(QGraphicsView):
         self.setRenderHint(0x01)  # Anti-aliasing
         self.draw_custom_grid()
         self.center_on_middle_cell()
+
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
     def create_hexagon(self, center_x, center_y):
         """Creates a hexagon centered at (center_x, center_y)."""
@@ -55,3 +58,11 @@ class CustomHexagonalGrid(QGraphicsView):
 
         # Center the view on this position
         self.centerOn(center_x, center_y)
+
+
+    def move_view(self, dx, dy):
+        """Moves the view by a specific offset."""
+        # Adjust the view position by (dx, dy)
+        current_center = self.mapToScene(self.viewport().rect().center())
+        new_center = QPointF(current_center.x() + dx, current_center.y() + dy)
+        self.centerOn(new_center)

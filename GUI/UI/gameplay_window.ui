@@ -25,8 +25,8 @@
      <rect>
       <x>140</x>
       <y>110</y>
-      <width>1631</width>
-      <height>861</height>
+      <width>1500</width>
+      <height>750</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -88,7 +88,7 @@
       <x>1790</x>
       <y>50</y>
       <width>102</width>
-      <height>901</height>
+      <height>1166</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -243,7 +243,7 @@
       <x>20</x>
       <y>50</y>
       <width>102</width>
-      <height>901</height>
+      <height>1162</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -425,6 +425,46 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>470</x>
+      <y>880</y>
+      <width>871</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="up_button">
+       <property name="text">
+        <string>Up</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="down_button">
+       <property name="text">
+        <string>Down</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="right_button">
+       <property name="text">
+        <string>Right</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="left_button">
+       <property name="text">
+        <string>Left</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -432,7 +472,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

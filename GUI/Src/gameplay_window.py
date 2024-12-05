@@ -1,3 +1,4 @@
+from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QPushButton, QFrame, QVBoxLayout, QWidget
 from PyQt5.QtGui import QFont, QFontDatabase
 from PyQt5 import uic
@@ -11,7 +12,8 @@ from GUI.Src.HexaGrid import CustomHexagonalGrid
 class GameplayWindow(QMainWindow):
     def __init__(self):
         super(GameplayWindow, self).__init__()
-
+        # set the Size of the window
+        # self.setFixedSize(1917, 1080)
         # load ui file
         print(os.getcwd())  # for debugging
         uic.loadUi("UI/gameplay_window.ui", self)
@@ -53,6 +55,18 @@ class GameplayWindow(QMainWindow):
         self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
 
         self.creatGrid()
+        #catch control Buttons
+        self.up_button = self.findChild(QPushButton,"up_button")
+        self.down_button = self.findChild(QPushButton,"down_button")
+
+        self.right_button = self.findChild(QPushButton, "right_button")
+        self.left_button = self.findChild(QPushButton, "left_button")
+
+        #add ctrl button style
+        self.up_button.setProperty("class", "ctrl_button")
+        self.left_button.setProperty("class", "ctrl_button")
+        self.right_button.setProperty("class", "ctrl_button")
+        self.down_button.setProperty("class", "ctrl_button")
         # connect signal and slot
 
         # connect tiles
@@ -77,6 +91,10 @@ class GameplayWindow(QMainWindow):
         hex_size = 35  # Adjust the size of the hexagons as needed
         self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
 
+        self.up_button.clicked.connect(lambda: self.hex_grid.move_view(0, -100))
+        self.down_button.clicked.connect(lambda: self.hex_grid.move_view(0, 100))
+        self.right_button.clicked.connect(lambda: self.hex_grid.move_view(100, 0))
+        self.left_button.clicked.connect(lambda: self.hex_grid.move_view(-100, 0))
         layout = QVBoxLayout(self.grid_placeholder)
         layout.addWidget(self.hex_grid)
 
