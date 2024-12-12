@@ -16,16 +16,17 @@ class MinMaxAI:
         self.depth = depth
 
 
-    def evaluate(self, game_state):
+    def evaluate(self, game_state, maximizing_player):
         """
         Heuristic evaluation of the game state.
         """
         # The turns are flipped because we evaluate AFTER updating state
-        player = game_state.players[0]
-        opponent = game_state.players[1]
+        player = game_state.players[1 - game_state.turn]
+        opponent = game_state.players[game_state.turn]
         
+        factor = 1 if maximizing_player else -1 
         
-        score = (len(player.placed_pieces) - len(opponent.placed_pieces)) * 1000
+        score = (len(player.placed_pieces) - len(opponent.placed_pieces)) * 10000
         #print("SCORE DIFF: ", score)
         if player.get_queen() and game_state.is_the_queen_surrounded(player.get_queen()):
             score -= 1000000000
@@ -37,15 +38,14 @@ class MinMaxAI:
                       len(player.get_queen().get_occupied_neighbors(game_state.state))) * 500)
                       
         #print("SCORE: ", score * factor)
-        return score
+        return score * factor
 
         # Example heuristic: number of placed pieces and queen safety
 
     def min_max(self, game_state, depth, maximizing_player):
         if depth == 0 or game_state.check_for_a_winner() != -1:
-            return self.evaluate(game_state)
+            return self.evaluate(game_state, 1 - maximizing_player)
 
-        print((5 - depth) * "  " + f"Current player: {maximizing_player}")#, time on entry: " + get_time_diff())
         moves = game_state.getAllMovesForAI()
 
         if not moves:
@@ -94,18 +94,18 @@ class MinMaxAI:
     def alpha_beta(self, game_state, depth, alpha, beta, maximizing_player):
         #print("Entered alpha-beta:")
         #get_time_diff()
-        print((5 - depth) * "  " + f"Current player: {maximizing_player}")#, time on entry: " + get_time_diff())
+        #print((2 - depth) * "  " + f"Current player: {game_state.turn} and maximizing? {maximizing_player}")#, time on entry: " + get_time_diff())
         if depth == 0 or game_state.check_for_a_winner() != -1:
-            return self.evaluate(game_state)
+            return self.evaluate(game_state, 1 - maximizing_player)
         #print("Before getting moves: ")
         #get_time_diff()
         moves = game_state.getAllMovesForAI()
         #print("After getting moves: ")
         #get_time_diff()
-        print(depth * "  " + f"CURRENT PLAYER: {maximizing_player}, NUMBER OF MOVES: {len(moves)}")
+        print((2 - depth) * "  " + f"CURRENT PLAYER: {game_state.turn}, maximizing? {maximizing_player}, NUMBER OF MOVES: {len(moves)}")
         if not moves:
             # No valid moves; return a default evaluation score
-            return self.evaluate(game_state)
+            return self.evaluate(game_state, 1 - maximizing_player)
         
         #print("MOVES LIST: ", moves)
         #print("PLAYER AVAILABLE PIECES: ", game_state.players[game_state.turn].unplaced_pieces)
@@ -130,7 +130,7 @@ class MinMaxAI:
                                       game_state.state[move[0].r][move[0].q] if move[0] else None,
                                       True
                                       )
-            evaluated_moves_list.append((self.evaluate(game_state), move))
+            evaluated_moves_list.append((self.evaluate(game_state, maximizing_player), move))
             game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
                                   game_state.state[move[0].r][move[0].q] if move[0] else None)
             #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
@@ -150,15 +150,15 @@ class MinMaxAI:
             max_eval = float('-inf')
             best_move = None
             evaluated_moves_list.sort(key=lambda move: -move[0])
-            #for score, move in evaluated_moves_list:
-            #    print((5 - depth) * "  " + f"({score}, {move})")
+            for score, move in evaluated_moves_list:
+                print((2 - depth) * "  " + f"({score}, {move})")
             for _, move in evaluated_moves_list:
                 #print((2 - depth) * "  " + "BEFOR: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
                 game_state.update_state(game_state.state[move[1].r][move[1].q], move[2],
                                         game_state.state[move[0].r][move[0].q] if move[0] else None,
                                         True
                                         )
-                eval = self.evaluate(game_state) if depth == 1 else self.alpha_beta(game_state, depth - 1, alpha, beta, False)
+                eval = self.alpha_beta(game_state, depth - 1, alpha, beta, False)
                 game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
                                   game_state.state[move[0].r][move[0].q] if move[0] else None)
                 #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
@@ -170,6 +170,7 @@ class MinMaxAI:
                     best_move = move
                 alpha = max(alpha, eval)
                 if beta <= alpha:
+                    print(f"{alpha}/{beta}:________________________ PRUNED _____________________")
                     break
             #print("Exit alpha-beta")
             #get_time_diff()
@@ -181,8 +182,8 @@ class MinMaxAI:
             best_move = None
             evaluated_moves_list.sort(key=lambda move: move[0])
             
-            #for score, move in evaluated_moves_list:
-            #    print((5 - depth) * "  " + f"({score}, {move})")
+            for score, move in evaluated_moves_list:
+                print((2 - depth) * "  " + f"({score}, {move})")
                 
             for _, move in evaluated_moves_list:
                 #print((2 - depth) * "  " + "BEFOR: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
@@ -190,7 +191,7 @@ class MinMaxAI:
                                       game_state.state[move[0].r][move[0].q] if move[0] else None,
                                       True
                                       )
-                eval = self.evaluate(game_state) if depth == 1 else self.alpha_beta(game_state, depth - 1, alpha, beta, True)
+                eval = self.alpha_beta(game_state, depth - 1, alpha, beta, True)
                 game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
                                   game_state.state[move[0].r][move[0].q] if move[0] else None)
                 #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
@@ -199,5 +200,6 @@ class MinMaxAI:
                     best_move = move
                 beta = min(beta, eval)
                 if beta <= alpha:
+                    print(f"{alpha}/{beta}:________________________ PRUNED _____________________")
                     break
             return best_move if depth == self.depth else min_eval
