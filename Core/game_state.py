@@ -39,10 +39,10 @@ class GameState:
             ai = MinMaxAI(depth=2)
             best_move = ai.min_max(self, ai.depth, True)
         elif self.players[self.turn].get_level() == "m":
-            ai = AlphaBetaPruningAI(depth=3)
+            ai = MinMaxAI(depth=3)
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         else:
-            ai = AlphaBetaPruningAI(depth=5)  # Higher depth for hard level
+            ai = MinMaxAI(depth=5)  # Higher depth for hard level
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
 
         # Perform the best move
@@ -200,6 +200,9 @@ class GameState:
             self.reset_for_new_turn()
         return result
 
+    def get_unplaced_pieces(self):
+        return self.players[self.turn].get_unplaced_pieces()
+
     def getAllMovesForAI(self):
         """
         Generates all possible moves and placements for the AI.
@@ -208,6 +211,11 @@ class GameState:
                  If the piece is being placed, from_cell will be None.
         """
         moves = []
+        if self.players[self.turn].get_moves_count()==3:
+            for to_cell in self.current_allowed_placements:
+                moves.append((None, to_cell, Queen(self.turn)))
+
+            return moves
 
         unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
         for piece in unplaced_pieces:

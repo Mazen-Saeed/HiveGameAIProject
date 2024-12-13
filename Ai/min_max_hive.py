@@ -22,7 +22,6 @@ class MinMaxAI:
 
         return score
 
-
     def min_max(self, game_state, depth, maximizing_player):
         if depth == 0 or game_state.check_for_a_winner() != -1:
             return self.evaluate(game_state)
@@ -33,7 +32,6 @@ class MinMaxAI:
             # No valid moves; return a default evaluation score
             return self.evaluate(game_state)
 
-
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
@@ -41,7 +39,7 @@ class MinMaxAI:
                 cloned_state = copy.deepcopy(game_state)
                 cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
                                           cloned_state.state[move[0].r][move[0].q] if move[0] else None
-                                         )
+                                          )
                 eval = self.min_max(cloned_state, depth - 1, False)
                 if eval > max_eval:
                     max_eval = eval
