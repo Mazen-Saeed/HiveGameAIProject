@@ -26,6 +26,9 @@ class CellPosition:
         self.pieces = []
 
     def __eq__(self, other):
+        if other is None:
+            return False
+
         return self.q == other.q and self.r == other.r
 
     def __hash__(self):
