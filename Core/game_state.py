@@ -2,9 +2,23 @@ from pieces import Piece,Queen
 from Ai import MinMaxAI,AlphaBetaPruningAI,AlphaBetaPruningWithIterativeDeepeningAI
 from Core.cell_position import CellPosition
 from Core.player import Player
-
+import copy
 
 class GameState:
+    def __deepcopy__(self, memo):
+        # Create a new instance
+        new_copy = GameState()
+
+        # Deepcopy all attributes
+        new_copy.state = copy.deepcopy(self.state, memo)
+        new_copy.players = copy.deepcopy(self.players, memo)
+        new_copy.turn = self.turn
+        new_copy.current_allowed_moves = copy.deepcopy(self.current_allowed_moves, memo)
+        new_copy.current_allowed_placements = copy.deepcopy(self.current_allowed_placements, memo)
+        new_copy.playerWon = self.playerWon
+
+        return new_copy
+
     def __init__(self, player1Type="p", player2Type="p", player1Level="p", player2Level="p"):
         self._initialize_state(player1Type, player2Type, player1Level, player2Level)
 
