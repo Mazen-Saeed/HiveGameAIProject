@@ -5,6 +5,13 @@ from PyQt5 import uic
 import sys
 import os
 
+from Core.game_state import GameState,game_state
+from GUI.Src.gameplay_window import GameplayWindow
+
+
+#from gameplay_window import GameplayWindow
+
+
 class StartWindow(QMainWindow):
     def __init__(self):
         super(StartWindow,self).__init__()
@@ -83,15 +90,40 @@ class StartWindow(QMainWindow):
     
 
     def start_button_clicked(self):
+        # Human -> p
+        # AI -> c
+        # Easy -> e
+        # Medium -> m
+        # Difficult -> h
+        if(self.player_one_type_button.text() == "Human"):
+            self.player_one_type = 'p'
+            self.player_one_diff = 'p'
+        else:
+            self.player_one_type = 'c'
+            if self.player_one_diff_button.text() == "Easy":
+                self.player_one_diff = 'e'
+            elif self.player_one_diff_button.text() == "Medium":
+                self.player_one_diff = 'm'
+            else:
+                self.player_one_diff = 'h'
 
-        # TODO
-        self.player_one_type = self.player_one_type_button.text()
-        self.player_one_diff = self.player_one_diff_button.text()
-        self.player_two_diff = self.player_two_diff_button.text()
-        self.player_two_type = self.player_two_type_button.text()
-        print("player One : type: "+self.player_one_type +" level : "+self.player_one_diff)
-        print("player Two : type: "+self.player_two_type +" level : "+self.player_two_diff)
+        if (self.player_two_type_button.text() == "Human"):
+            self.player_two_type = 'p'
+            self.player_two_diff = 'p'
+        else:
+            self.player_two_type = 'c'
+            if self.player_two_diff_button.text() == "Easy":
+                self.player_two_diff = 'e'
+            elif self.player_two_diff_button.text() == "Medium":
+                self.player_two_diff = 'm'
+            else:
+                self.player_two_diff = 'h'
 
+        #self.game_state = GameState()
+        game_state._initialize_state(self.player_one_type,self.player_two_type,self.player_one_diff,self.player_two_diff)
+        self.play_window = GameplayWindow()
+        self.play_window.show()
+        self.close()
 
     def exit_clicked(self):
         # kill the program 

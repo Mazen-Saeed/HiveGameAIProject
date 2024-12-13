@@ -6,8 +6,8 @@ import os
 #os.chdir("/home/mazen/PycharmProjects/HiveGame/")
 
 app = QApplication(sys.argv)
-#StartWindow = StartWindow()
-GameplayWindow = GameplayWindow()
+StartWindow = StartWindow()
+#GameplayWindow = GameplayWindow()
 app.exec_()
 
 
