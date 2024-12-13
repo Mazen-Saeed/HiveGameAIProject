@@ -1,10 +1,9 @@
+import copy
+
+
 class MinMaxAI:
     def __init__(self, depth=3):
         self.depth = depth
-
-    def clone(self):
-        import copy
-        return copy.deepcopy(self)
 
 
     def evaluate(self, game_state):
@@ -38,7 +37,7 @@ class MinMaxAI:
             max_eval = float('-inf')
             best_move = None
             for move in game_state.getAllMovesForAI():
-                cloned_state = game_state.clone()
+                cloned_state = copy.deepcopy(game_state)
                 cloned_state.update_state(*move)
                 eval = self.min_max(cloned_state, depth - 1, False)
                 if eval > max_eval:
@@ -49,7 +48,7 @@ class MinMaxAI:
             min_eval = float('inf')
             best_move = None
             for move in game_state.getAllMovesForAI():
-                cloned_state = game_state.clone()
+                cloned_state = copy.deepcopy(game_state)
                 cloned_state.update_state(*move)
                 eval = self.min_max(cloned_state, depth - 1, True)
                 if eval < min_eval:
