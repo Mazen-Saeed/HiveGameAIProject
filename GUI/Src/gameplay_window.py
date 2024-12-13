@@ -204,11 +204,42 @@ class GameplayWindow(QMainWindow):
                 if game_state.players[current_turn].player_type == 'c':
                     from_cell, to_cell, piece = game_state.make_a_move()
                     ##TODO: make the movement in GUI
+                    self.adjust_cells(from_cell,to_cell,piece)
                     print(from_cell, to_cell, piece)
                     game_state.update_state(to_cell, piece, from_cell)
                     game_state.check_for_a_winner()
                 else:
                     break
+    def adjust_cells(self,from_cell,to_cell,piece):
+        if from_cell != None:
+            from_row = from_cell.r
+            from_col = from_cell.q
+            from_cell_obj = self.hex_grid.hex_items.get((from_row,from_col))
+            from_cell_obj.remove_image()
+
+        to_row = to_cell.r
+        to_col = to_cell.q
+        to_cell_obj = self.hex_grid.hex_items.get((to_row,to_col))
+        if piece.name == 'A' and piece.player == 0:
+            to_cell_obj.add_image("Image/Black Ant.png")
+        elif piece.name == 'A' and piece.player == 1:
+            to_cell_obj.add_image("Image/White Ant.png")
+        elif piece.name == 'G' and piece.player == 0:
+            to_cell_obj.add_image("Image/Black Grasshopper.png")
+        elif piece.name == 'G' and piece.player == 1:
+            to_cell_obj.add_image("Image/White Grasshopper.png")
+        elif piece.name == 'B' and piece.player == 0:
+            to_cell_obj.add_image("Image/Black Beetle.png")
+        elif piece.name == 'B' and piece.player == 1:
+            to_cell_obj.add_image("Image/White Beetle.png")
+        elif piece.name == 'S' and piece.player == 0:
+            to_cell_obj.add_image("Image/Black Spider.png")
+        elif piece.name == 'S' and piece.player == 1:
+            to_cell_obj.add_image("Image/White Spider.png")
+        elif piece.name == 'Q' and piece.player == 0:
+            to_cell_obj.add_image("Image/Black Queen.png")
+        elif piece.name == 'Q' and piece.player == 1:
+            to_cell_obj.add_image("Image/White Queen.png")
 
 # TODO
 # connect the backend with the GUI
