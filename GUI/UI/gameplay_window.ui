@@ -93,6 +93,19 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
+      <widget class="ClickableLabel" name="white_ant_1">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>../Images/White Ant.png</pixmap>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="ClickableLabel" name="white_ant_2">
        <property name="text">
         <string/>
@@ -107,19 +120,6 @@
      </item>
      <item>
       <widget class="ClickableLabel" name="white_ant_3">
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>../Images/White Ant.png</pixmap>
-       </property>
-       <property name="scaledContents">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="ClickableLabel" name="white_ant_1">
        <property name="text">
         <string/>
        </property>
@@ -248,7 +248,7 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="ClickableLabel" name="black_ant_2">
+      <widget class="ClickableLabel" name="black_ant_1">
        <property name="text">
         <string/>
        </property>
@@ -261,7 +261,7 @@
       </widget>
      </item>
      <item>
-      <widget class="ClickableLabel" name="black_ant_1">
+      <widget class="ClickableLabel" name="black_ant_2">
        <property name="text">
         <string/>
        </property>
