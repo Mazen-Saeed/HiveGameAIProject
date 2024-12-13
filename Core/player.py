@@ -87,3 +87,6 @@ class Player:
                 found_moves = True
 
         return found_moves
+
+    def get_unplaced_pieces(self):
+        return self.unplaced_pieces
