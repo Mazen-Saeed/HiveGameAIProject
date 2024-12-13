@@ -196,10 +196,17 @@ class GameplayWindow(QMainWindow):
         else:
             self.disable_black_buttons()
 
+    def enable_buttons(self):
+        if game_state.turn == 0 :
+            self.enable_black_buttons()
+        else:
+            self.enable_white_buttons()
+
     def start_game(self):
         while True:
             if(game_state.player_allowed_to_play()):
                 self.disable_buttons()
+                self.enable_buttons()
                 current_turn = game_state.turn
                 if game_state.players[current_turn].player_type == 'c':
                     from_cell, to_cell, piece = game_state.make_a_move()
