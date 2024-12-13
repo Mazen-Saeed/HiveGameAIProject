@@ -74,27 +74,55 @@ class GameplayWindow(QMainWindow):
         # connect tiles
         self.black_ant_1.clicked.connect(lambda: self.clicker(self.black_ant_1))
         self.white_ant_1.clicked.connect(lambda: self.clicker(self.white_ant_1))
+        self.white_ant_2.clicked.connect(lambda: self.clicker(self.white_ant_2))
+        self.black_ant_2.clicked.connect(lambda: self.clicker(self.black_ant_2))
+        self.black_ant_3.clicked.connect(lambda: self.clicker(self.black_ant_3))
+        self.white_ant_3.clicked.connect(lambda: self.clicker(self.white_ant_3))
 
+        self.black_grasshopper_1.clicked.connect(lambda: self.clicker(self.black_grasshopper_1))
+        self.black_grasshopper_2.clicked.connect(lambda: self.clicker(self.black_grasshopper_2))
+        self.black_grasshopper_3.clicked.connect(lambda: self.clicker(self.black_grasshopper_3))
+        self.white_grasshopper_1.clicked.connect(lambda: self.clicker(self.white_grasshopper_1))
+        self.white_grasshopper_2.clicked.connect(lambda: self.clicker(self.white_grasshopper_2))
+        self.white_grasshopper_3.clicked.connect(lambda: self.clicker(self.white_grasshopper_3))
 
+        self.black_beetle_1.clicked.connect(lambda: self.clicker(self.black_beetle_1))
+        self.black_beetle_2.clicked.connect(lambda: self.clicker(self.black_beetle_2))
+        self.white_beetle_1.clicked.connect(lambda: self.clicker(self.white_beetle_1))
+        self.white_beetle_2.clicked.connect(lambda: self.clicker(self.white_beetle_2))
+
+        self.black_spider_1.clicked.connect(lambda: self.clicker(self.black_spider_1))
+        self.black_spider_2.clicked.connect(lambda: self.clicker(self.black_spider_2))
+        self.white_spider_1.clicked.connect(lambda: self.clicker(self.white_spider_1))
+        self.white_spider_2.clicked.connect(lambda: self.clicker(self.white_spider_2))
+
+        self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
+        self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
+
+        self.start_game()
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
             self.setStyleSheet(stylesheet)
-        self.disable_buttons()
         # Show our custom UI
         self.show()
 
+
     def clicker(self,tile: ClickableLabel):
+        allowed_cells = game_state.get_allowed_cells()
+        for cell in allowed_cells:
+            row = cell.r
+            col = cell.q
+            self.hex_grid.hex_items.get((row,col)).mark()
         if not tile.pressed:
             tile.pressed = True
             tile.setStyleSheet("border: 2px solid aqua;")
         else:
             tile.pressed = False
             tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 2px solid aqua; }")
-        print("clicked")
 
     def creatGrid(self):
-        hex_size = 35  # Adjust the size of the hexagons as needed
+        hex_size = 52  # Adjust the size of the hexagons as needed
         self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
 
         self.up_button.clicked.connect(lambda: self.hex_grid.move_view(0, -100))
@@ -168,12 +196,22 @@ class GameplayWindow(QMainWindow):
         else:
             self.disable_black_buttons()
 
+    def start_game(self):
+        while True:
+            if(game_state.player_allowed_to_play()):
+                self.disable_buttons()
+                current_turn = game_state.turn
+                if game_state.players[current_turn].player_type == 'c':
+                    from_cell, to_cell, piece = game_state.make_a_move()
+                    ##TODO: make the movement in GUI
+                    print(from_cell, to_cell, piece)
+                    game_state.update_state(to_cell, piece, from_cell)
+                    game_state.check_for_a_winner()
+                else:
+                    break
 
 # TODO
-# adjust hexagonal shape if border if can be done
-# grid of playing
 # connect the backend with the GUI
 
 
 #TODO logic
-#1- disable white buttons , disable black buttons, another function to call one of them based on the turn (disableButtons)

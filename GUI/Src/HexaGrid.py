@@ -34,6 +34,7 @@ class CustomHexagonalGrid(QGraphicsView):
 
     def draw_custom_grid(self):
         """Draws the hexagonal grid based on the provided shape."""
+        self.hex_items = {}  # Dictionary to store hexagon instances
         for row, col in self.grid_shape:
             # Calculate hexagon center
             x_offset = col * (self.hex_size * 3.6 / 2)
@@ -45,6 +46,7 @@ class CustomHexagonalGrid(QGraphicsView):
             hexagon = self.create_hexagon(x_offset, y_offset)
             hex_item = ClickableHexagon(hexagon,row,col)
             self.scene.addItem(hex_item)
+            self.hex_items[(row, col)] = hex_item
 
     def center_on_middle_cell(self):
         """Centers the viewport on the middle cell (25, 25)."""
