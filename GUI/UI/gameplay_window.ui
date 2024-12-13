@@ -23,9 +23,9 @@
    <widget class="QFrame" name="grid_placeholder">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>169</x>
       <y>110</y>
-      <width>1500</width>
+      <width>1571</width>
       <height>750</height>
      </rect>
     </property>
@@ -86,9 +86,9 @@
     <property name="geometry">
      <rect>
       <x>1790</x>
-      <y>50</y>
+      <y>40</y>
       <width>102</width>
-      <height>1166</height>
+      <height>931</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -241,9 +241,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>50</y>
+      <y>30</y>
       <width>102</width>
-      <height>1162</height>
+      <height>941</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -472,7 +472,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>
