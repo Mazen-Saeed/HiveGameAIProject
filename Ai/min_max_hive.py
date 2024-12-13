@@ -23,24 +23,6 @@ class MinMaxAI:
 
         return score
 
-    def get_all_possible_moves(self, game_state):
-        """
-        Generate all valid moves for the current player.
-        """
-        possible_moves = []
-
-        # Placement moves
-        for cell in game_state.current_allowed_placements:
-            for piece in game_state.players[game_state.turn].unplaced_pieces:
-                possible_moves.append((None, cell, piece))  # Placement move
-
-        # Movement moves
-        for from_cell, to_cells in game_state.current_allowed_moves.items():
-            for to_cell in to_cells:
-                piece = from_cell.get_top_piece()
-                possible_moves.append((from_cell, to_cell, piece))  # Movement move
-
-        return possible_moves
 
     def min_max(self, game_state, depth, maximizing_player):
         if depth == 0 or game_state.check_for_a_winner() != -1:
@@ -49,7 +31,7 @@ class MinMaxAI:
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
-            for move in self.get_all_possible_moves(game_state):
+            for move in game_state.getAllMovesForAI():
                 cloned_state = game_state.clone()
                 cloned_state.update_state(*move)
                 eval = self.min_max(cloned_state, depth - 1, False)
@@ -60,7 +42,7 @@ class MinMaxAI:
         else:
             min_eval = float('inf')
             best_move = None
-            for move in self.get_all_possible_moves(game_state):
+            for move in game_state.getAllMovesForAI():
                 cloned_state = game_state.clone()
                 cloned_state.update_state(*move)
                 eval = self.min_max(cloned_state, depth - 1, True)
