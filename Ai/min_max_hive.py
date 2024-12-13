@@ -28,6 +28,12 @@ class MinMaxAI:
         if depth == 0 or game_state.check_for_a_winner() != -1:
             return self.evaluate(game_state)
 
+        moves = game_state.getAllMovesForAI()
+        if not moves:
+            # No valid moves; return a default evaluation score
+            return self.evaluate(game_state)
+
+
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
@@ -55,10 +61,15 @@ class MinMaxAI:
         if depth == 0 or game_state.check_for_a_winner() != -1:
             return self.evaluate(game_state)
 
+        moves = game_state.getAllMovesForAI()
+        if not moves:
+            # No valid moves; return a default evaluation score
+            return self.evaluate(game_state)
+
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
-            for move in self.get_all_possible_moves(game_state):
+            for move in game_state.getAllMovesForAI():
                 cloned_state = game_state.clone()
                 cloned_state.update_state(*move)
                 eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, False)
@@ -72,7 +83,7 @@ class MinMaxAI:
         else:
             min_eval = float('inf')
             best_move = None
-            for move in self.get_all_possible_moves(game_state):
+            for move in game_state.getAllMovesForAI():
                 cloned_state = game_state.clone()
                 cloned_state.update_state(*move)
                 eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, True)
