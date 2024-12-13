@@ -185,4 +185,25 @@ class GameState:
         if not result:
             self.reset_for_new_turn()
         return result
+
+    def getAllMovesForAI(self):
+        """
+        Generates all possible moves and placements for the AI.
+
+        :return: A list of tuples, where each tuple represents a move or placement in the form (from_cell, to_cell, piece).
+                 If the piece is being placed, from_cell will be None.
+        """
+        moves = []
+
+        unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
+        for piece in unplaced_pieces:
+            for to_cell in self.current_allowed_placements:
+                moves.append((None, to_cell, piece))
+
+        for from_cell, allowed_moves in self.current_allowed_moves.items():
+            for to_cell in allowed_moves:
+                piece = from_cell.get_top_piece()
+                moves.append((from_cell, to_cell, piece))
+
+        return moves
 game_state = GameState()
