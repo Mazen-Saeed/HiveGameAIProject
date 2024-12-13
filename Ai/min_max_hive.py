@@ -2,13 +2,9 @@ class MinMaxAI:
     def __init__(self, depth=3):
         self.depth = depth
 
-
     def clone(self):
-    """
-    Creates a deep copy of the game state for simulation purposes.
-    """
-    import copy
-    return copy.deepcopy(self)
+        import copy
+        return copy.deepcopy(self)
 
 
     def evaluate(self, game_state):
@@ -105,4 +101,3 @@ class MinMaxAI:
                 if beta <= alpha:
                     break
             return best_move if depth == self.depth else min_eval
-    
