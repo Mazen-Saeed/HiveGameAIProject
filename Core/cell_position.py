@@ -1,9 +1,19 @@
+import copy
+
 class CellPosition:
     dq_odd = [0, 1, 1, 1, 0, -1]
     dr_odd = [-1, -1, 0, 1, 1, 0]
     dq_even = [-1, 0, 1,0,-1,-1]
     dr_even = [-1, -1, 0,1,1,0]
 
+    def __deepcopy__(self, memo):
+        # Create a new instance
+        new_copy = CellPosition(self.r, self.q)
+
+        # Deepcopy mutable attributes
+        new_copy.pieces = copy.deepcopy(self.pieces, memo)
+
+        return new_copy
 
     def __init__(self, r, q):
         """

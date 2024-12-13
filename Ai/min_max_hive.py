@@ -28,6 +28,7 @@ class MinMaxAI:
             return self.evaluate(game_state)
 
         moves = game_state.getAllMovesForAI()
+
         if not moves:
             # No valid moves; return a default evaluation score
             return self.evaluate(game_state)
@@ -36,28 +37,28 @@ class MinMaxAI:
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
-            for move in game_state.getAllMovesForAI():
+            for move in moves:
                 cloned_state = copy.deepcopy(game_state)
-                cloned_state2 = cloned_state
-                cloned_state.update_state(move[1], move[2], move[0])
+                cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
+                                          cloned_state.state[move[0].r][move[0].q] if move[0] else None
+                                         )
                 eval = self.min_max(cloned_state, depth - 1, False)
                 if eval > max_eval:
                     max_eval = eval
                     best_move = move
-                cloned_state = cloned_state2
             return best_move if depth == self.depth else max_eval
         else:
             min_eval = float('inf')
             best_move = None
             for move in game_state.getAllMovesForAI():
                 cloned_state = copy.deepcopy(game_state)
-                cloned_state2 = cloned_state
-                cloned_state.update_state(move[1], move[2], move[0])
+                cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
+                                          cloned_state.state[move[0].r][move[0].q] if move[0] else None
+                                          )
                 eval = self.min_max(cloned_state, depth - 1, True)
                 if eval < min_eval:
                     min_eval = eval
                     best_move = move
-                cloned_state = cloned_state2
             return best_move if depth == self.depth else min_eval
 
     def alpha_beta(self, game_state, depth, alpha, beta, maximizing_player):
@@ -72,10 +73,11 @@ class MinMaxAI:
         if maximizing_player:
             max_eval = float('-inf')
             best_move = None
-            for move in game_state.getAllMovesForAI():
-                cloned_state = game_state.clone()
-                cloned_state2 = cloned_state
-                cloned_state.update_state(move[1], move[2], move[0])
+            for move in moves:
+                cloned_state = copy.deepcopy(game_state)
+                cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
+                                          cloned_state.state[move[0].r][move[0].q] if move[0] else None
+                                          )
                 eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, False)
                 if eval > max_eval:
                     max_eval = eval
@@ -83,15 +85,15 @@ class MinMaxAI:
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-                cloned_state = cloned_state2
             return best_move if depth == self.depth else max_eval
         else:
             min_eval = float('inf')
             best_move = None
             for move in game_state.getAllMovesForAI():
-                cloned_state = game_state.clone()
-                cloned_state2 = cloned_state
-                cloned_state.update_state(move[1], move[2], move[0])
+                cloned_state = copy.deepcopy(game_state)
+                cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
+                                          cloned_state.state[move[0].r][move[0].q] if move[0] else None
+                                          )
                 eval = self.alpha_beta(cloned_state, depth - 1, alpha, beta, True)
                 if eval < min_eval:
                     min_eval = eval
@@ -99,5 +101,4 @@ class MinMaxAI:
                 beta = min(beta, eval)
                 if beta <= alpha:
                     break
-                cloned_state = cloned_state2
             return best_move if depth == self.depth else min_eval

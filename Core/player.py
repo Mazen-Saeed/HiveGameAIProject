@@ -1,7 +1,16 @@
 from Core.cell_position import CellPosition
 from pieces import Grasshopper, Ant, Beetle, Spider, Queen
-
+import copy
 class AvailablePieces:
+    def __deepcopy__(self, memo):
+        # Create a new instance
+        new_copy = AvailablePieces(self.pieces[0].player if self.pieces else None)
+
+        # Deepcopy the pieces list
+        new_copy.pieces = copy.deepcopy(self.pieces, memo)
+
+        return new_copy
+
     def __init__(self, player_number):
         self.pieces = [Grasshopper(player_number)] * 3
         self.pieces += [Ant(player_number)] * 3
@@ -31,6 +40,19 @@ class AvailablePieces:
 
 
 class Player:
+
+    def __deepcopy__(self, memo):
+        # Create a new instance
+        new_copy = Player(self.player_number, self.player_type, self.player_level)
+
+        # Deepcopy mutable attributes
+        new_copy.unplaced_pieces = copy.deepcopy(self.unplaced_pieces, memo)
+        new_copy.placed_pieces = copy.deepcopy(self.placed_pieces, memo)
+        new_copy.moves_count = self.moves_count
+        new_copy.player_won = self.player_won
+        new_copy.queen = copy.deepcopy(self.queen, memo) if self.queen else None
+
+        return new_copy
     def __init__(self, player_number,player_type,player_level):
         self.unplaced_pieces = AvailablePieces(player_number)
         self.placed_pieces = list()

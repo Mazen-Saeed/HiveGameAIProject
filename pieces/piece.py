@@ -1,6 +1,15 @@
 from Core.cell_position import CellPosition
-
 class Piece:
+
+    def __deepcopy__(self, memo):
+        # Create a new instance
+        new_copy = Piece(self.player)
+
+        # Copy mutable attributes if any (for subclasses)
+        new_copy.name = self.name
+
+        return new_copy
+
     def __init__(self, player):
         self.name = "ANY"
         self.player = player

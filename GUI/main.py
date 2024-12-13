@@ -9,5 +9,3 @@ app = QApplication(sys.argv)
 StartWindow = StartWindow()
 #GameplayWindow = GameplayWindow()
 app.exec_()
-
-
