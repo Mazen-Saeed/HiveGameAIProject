@@ -185,3 +185,4 @@ class GameState:
         if not result:
             self.reset_for_new_turn()
         return result
+game_state = GameState()
