@@ -228,25 +228,25 @@ class GameplayWindow(QMainWindow):
         to_col = to_cell.q
         to_cell_obj = self.hex_grid.hex_items.get((to_row,to_col))
         if piece.name == 'A' and piece.player == 0:
-            to_cell_obj.add_image("Image/Black Ant.png")
+            to_cell_obj.add_image("Images/Black Ant.png")
         elif piece.name == 'A' and piece.player == 1:
-            to_cell_obj.add_image("Image/White Ant.png")
+            to_cell_obj.add_image("Images/White Ant.png")
         elif piece.name == 'G' and piece.player == 0:
-            to_cell_obj.add_image("Image/Black Grasshopper.png")
+            to_cell_obj.add_image("Images/Black Grasshopper.png")
         elif piece.name == 'G' and piece.player == 1:
-            to_cell_obj.add_image("Image/White Grasshopper.png")
+            to_cell_obj.add_image("Images/White Grasshopper.png")
         elif piece.name == 'B' and piece.player == 0:
-            to_cell_obj.add_image("Image/Black Beetle.png")
+            to_cell_obj.add_image("Images/Black Beetle.png")
         elif piece.name == 'B' and piece.player == 1:
-            to_cell_obj.add_image("Image/White Beetle.png")
+            to_cell_obj.add_image("Images/White Beetle.png")
         elif piece.name == 'S' and piece.player == 0:
-            to_cell_obj.add_image("Image/Black Spider.png")
+            to_cell_obj.add_image("Images/Black Spider.png")
         elif piece.name == 'S' and piece.player == 1:
-            to_cell_obj.add_image("Image/White Spider.png")
+            to_cell_obj.add_image("Images/White Spider.png")
         elif piece.name == 'Q' and piece.player == 0:
-            to_cell_obj.add_image("Image/Black Queen.png")
+            to_cell_obj.add_image("Images/Black Queen.png")
         elif piece.name == 'Q' and piece.player == 1:
-            to_cell_obj.add_image("Image/White Queen.png")
+            to_cell_obj.add_image("Images/White Queen.png")
 
 # TODO
 # connect the backend with the GUI
