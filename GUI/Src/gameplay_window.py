@@ -36,7 +36,7 @@ class GameplayWindow(QMainWindow):
         self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
         self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
 
-        self.start_game()
+        self.start_turn()
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
@@ -147,6 +147,7 @@ class GameplayWindow(QMainWindow):
 
     def start_turn(self):
         self.disable_buttons()
+        print("A")
         self.enable_buttons()
         if(game_state.player_allowed_to_play()):
             current_turn = game_state.turn
@@ -169,10 +170,11 @@ class GameplayWindow(QMainWindow):
         game_state.update_state(to_cell, piece, from_cell)
 
     def player_turn(self):
+        if game_state.must_place_queen_bee():
+            self.queen_must_play()
 
+        #self.start_timer()
 
-        self.start_timer()
-        pass
 
     def adjust_cells(self,from_cell,to_cell,piece):
         if from_cell != None:
@@ -287,9 +289,16 @@ class GameplayWindow(QMainWindow):
             self.game_status_label.setText("Black Player Turn")
         else:
             self.game_status_label.setText("White Player Turn")
-
+    def queen_must_play(self):
+        if game_state.turn == 0:
+            self.disable_black_buttons()
+            self.black_bee.enable()
+        else:
+            self.disable_white_buttons()
+            self.white_bee.enable()
 # TODO
 # connect the backend with the GUI
 
 
 #TODO logic
+# calling player start timer for start turn

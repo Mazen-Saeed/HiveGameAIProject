@@ -39,3 +39,5 @@ class ClickableLabel(QLabel):
         if self.is_enabled:
             self.clicked.emit()
             super().mousePressEvent(event)
+        else:
+            event.ignore()
