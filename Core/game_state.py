@@ -211,21 +211,17 @@ class GameState:
                  If the piece is being placed, from_cell will be None.
         """
         moves = []
-        if self.players[self.turn].get_moves_count()==3:
-            for to_cell in self.current_allowed_placements:
-                moves.append((None, to_cell, Queen(self.turn)))
 
-            return moves
+        if self.player_allowed_to_play():
+            unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
+            for piece in unplaced_pieces:
+                for to_cell in self.current_allowed_placements:
+                    moves.append((None, to_cell, piece))
 
-        unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
-        for piece in unplaced_pieces:
-            for to_cell in self.current_allowed_placements:
-                moves.append((None, to_cell, piece))
-
-        for from_cell, allowed_moves in self.current_allowed_moves.items():
-            for to_cell in allowed_moves:
-                piece = from_cell.get_top_piece()
-                moves.append((from_cell, to_cell, piece))
+            for from_cell, allowed_moves in self.current_allowed_moves.items():
+                for to_cell in allowed_moves:
+                    piece = from_cell.get_top_piece()
+                    moves.append((from_cell, to_cell, piece))
 
         return moves
 game_state = GameState()
