@@ -21,7 +21,7 @@ class GameplayWindow(QMainWindow):
         self.load_font_needed()
 
         self.game_timer = QTimer()
-        self.game_timer.timeout.connect(self.start_game)
+        self.game_timer.timeout.connect(self.start_turn)
 
 
         # catch UI element from ui file
@@ -29,7 +29,7 @@ class GameplayWindow(QMainWindow):
         # connect signal and slot
         # connect tiles
         self.connect_tiles()
-        self.start_game()
+        self.start_turn()
 
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
@@ -40,18 +40,21 @@ class GameplayWindow(QMainWindow):
 
     def start_timer(self):
         self.game_timer.start(50)
+
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
-        for cell in allowed_cells:
-            row = cell.r
-            col = cell.q
-            self.hex_grid.hex_items.get((row,col)).mark()
         if not tile.pressed:
+            for cell in allowed_cells:
+                row = cell.r
+                col = cell.q
+                self.hex_grid.hex_items.get((row, col)).mark()
             tile.pressed = True
             tile.setStyleSheet("border: 2px solid aqua;")
-            self.hex_grid.hex_items.get((21,21)).add_image("Images/Black Ant.png")
         else:
-            self.hex_grid.hex_items.get((21, 21)).remove_image()
+            for cell in allowed_cells:
+                row = cell.r
+                col = cell.q
+                self.hex_grid.hex_items.get((row, col)).unmark()
             tile.pressed = False
             tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 2px solid aqua; }")
 
@@ -136,26 +139,34 @@ class GameplayWindow(QMainWindow):
         else:
             self.enable_white_buttons()
 
-    def start_game(self):
+    def start_turn(self):
+        self.disable_buttons()
+        self.enable_buttons()
         if(game_state.player_allowed_to_play()):
-            self.disable_buttons()
-            self.enable_buttons()
             current_turn = game_state.turn
             if game_state.players[current_turn].player_type == 'c':
-                from_cell, to_cell, piece = game_state.make_a_move()
-                self.start_timer()
-                ##TODO: make the movement in GUI
-                self.adjust_cells(from_cell,to_cell,piece)
-                print(from_cell, to_cell, piece)
-                game_state.update_state(to_cell, piece, from_cell)
-                if game_state.check_for_a_winner() != -1:
-                    print("game finished")
-                    self.game_timer.stop()
+                self.ai_turn()
             else:
                 self.game_timer.stop()
-        else:
-            self.game_timer.stop()
+                self.player_turn()
 
+            if game_state.check_for_a_winner() != -1:
+                print("game finished")
+                self.game_timer.stop()
+        self.adjust_game_label()
+
+    def ai_turn(self):
+        from_cell, to_cell, piece = game_state.make_a_move()
+        self.start_timer()
+        self.adjust_cells(from_cell, to_cell, piece)
+        print(from_cell, to_cell, piece)
+        game_state.update_state(to_cell, piece, from_cell)
+
+    def player_turn(self):
+
+
+        self.start_timer()
+        pass
 
     def adjust_cells(self,from_cell,to_cell,piece):
         if from_cell != None:
@@ -264,6 +275,13 @@ class GameplayWindow(QMainWindow):
 
         self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
         self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
+
+    def adjust_game_label(self):
+        if game_state.turn == 0:
+            self.game_status_label.setText("Black Player Turn")
+        else:
+            self.game_status_label.setText("White Player Turn")
+
 # TODO
 # connect the backend with the GUI
 
