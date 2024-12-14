@@ -2,7 +2,8 @@ import math
 
 from PyQt5.QtCore import Qt, QRect, QSize
 from PyQt5.QtGui import QPen, QColor, QPixmap, QPainterPath, QRegion, QBrush, QPainter
-from PyQt5.QtWidgets import QGraphicsPolygonItem, QGraphicsPixmapItem, QGraphicsItemGroup
+from PyQt5.QtWidgets import QGraphicsPolygonItem, QGraphicsPixmapItem, QGraphicsItemGroup, QGraphicsItem, \
+    QGraphicsRectItem, QGraphicsPathItem
 
 
 class ClickableHexagon(QGraphicsPolygonItem):
@@ -49,12 +50,32 @@ class ClickableHexagon(QGraphicsPolygonItem):
     def add_image(self, image_path):
         """Set a scaled image as the brush for the hexagon."""
         pixmap = QPixmap(image_path)
-        # Scale the pixmap to the bounding rectangle of the hexagon
-        # scaled_pixmap = pixmap.scaled(self.boundingRect().size().toSize())
-        scaled_pixmap = pixmap.scaled(int(self.boundingRect().width()), int(self.boundingRect().height())+5, Qt.KeepAspectRatioByExpanding,Qt.SmoothTransformation)
 
-        brush = QBrush(scaled_pixmap)
-        self.setBrush(brush)
+        hex_rect = self.boundingRect()
+        # Scale the pixmap to the bounding rectangle of the hexagon
+        scaled_pixmap = pixmap.scaled(int(hex_rect.width()), int(hex_rect.height()), Qt.KeepAspectRatioByExpanding,Qt.SmoothTransformation)
+
+        self.image_item = QGraphicsPixmapItem(scaled_pixmap, parent=self)
+
+        # Center the pixmap in the hexagon
+        pixmap_center_x = hex_rect.x() + (hex_rect.width() - pixmap.width()) / 2
+        pixmap_center_y = hex_rect.y() + (hex_rect.height() - pixmap.height()) / 2
+        self.image_item.setPos(pixmap_center_x, pixmap_center_y)
+
+        # Optional: Clip the image to the hexagonal shape
+        clip_path = QPainterPath()
+        clip_path.addPolygon(self.polygon())  # Use the hexagonal polygon
+        clip_item = QGraphicsPathItem(clip_path, parent=self)
+        clip_item.setPen(QPen(Qt.NoPen))
+
+        brush = QBrush(self.image_item.pixmap())
+        clip_item.setBrush(brush)
+
+        self.image_item.setParentItem(clip_item)  # Make the image follow the clip
+        # brush = QBrush(scaled_pixmap)
+        # self.setBrush(brush)
+
+
 
     def remove_image(self):
         """Remove the image from the hexagon."""
