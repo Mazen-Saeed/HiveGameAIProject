@@ -130,7 +130,7 @@ class StartWindow(QMainWindow):
          QApplication.quit()
 
     def load_font_needed(self):
-        font_id = QFontDatabase.addApplicationFont("GUI/Fonts/Pridi-Medium.ttf")
+        font_id = QFontDatabase.addApplicationFont("Fonts/Pridi-Medium.ttf")
         if font_id == -1:
             print("Failed to load the font.")
         else:
