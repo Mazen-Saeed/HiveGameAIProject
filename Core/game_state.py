@@ -212,6 +212,11 @@ class GameState:
         """
         moves = []
 
+        if self.players[self.turn].get_moves_count() == 3:
+            for to_cell in self.current_allowed_placements:
+                moves.append((None, to_cell, Queen(self.turn)))
+            return moves
+
         if self.player_allowed_to_play():
             unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
             for piece in unplaced_pieces:
