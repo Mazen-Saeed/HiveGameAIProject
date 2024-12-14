@@ -1,9 +1,7 @@
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QMainWindow, QApplication, QLabel, QPushButton, QFrame, QVBoxLayout, QWidget
-from PyQt5.QtGui import QFont, QFontDatabase
+from PyQt5.QtWidgets import QMainWindow,QLabel, QPushButton, QFrame, QVBoxLayout
+from PyQt5.QtGui import QFontDatabase
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
-import sys
 import os
 
 from GUI.Src.ClickableLabel import ClickableLabel
@@ -22,84 +20,19 @@ class GameplayWindow(QMainWindow):
 
         self.load_font_needed()
 
+        self.game_timer = QTimer()
+        self.game_timer.timeout.connect(self.start_game)
+
+
         # catch UI element from ui file
-        # Black player tiles
-        self.black_ant_1 = self.findChild(ClickableLabel, "black_ant_1")
-        self.black_ant_2 = self.findChild(ClickableLabel, "black_ant_2")
-        self.black_ant_3 = self.findChild(ClickableLabel, "black_ant_3")
-        self.black_grasshopper_1 = self.findChild(ClickableLabel, "black_grasshopper_1")
-        self.black_grasshopper_2 = self.findChild(ClickableLabel, "black_grasshopper_2")
-        self.black_grasshopper_3 = self.findChild(ClickableLabel, "black_grasshopper_3")
-        self.black_beetle_1 = self.findChild(ClickableLabel, "black_beetle_1")
-        self.black_beetle_2 = self.findChild(ClickableLabel, "black_beetle_2")
-        self.black_spider_1 = self.findChild(ClickableLabel, "black_spider_1")
-        self.black_spider_2 = self.findChild(ClickableLabel, "black_spider_2")
-        self.black_bee = self.findChild(ClickableLabel, "black_bee")
-
-        # White player tiles
-        self.white_ant_1 = self.findChild(ClickableLabel, "white_ant_1")
-        self.white_ant_2 = self.findChild(ClickableLabel, "white_ant_2")
-        self.white_ant_3 = self.findChild(ClickableLabel, "white_ant_3")
-        self.white_grasshopper_1 = self.findChild(ClickableLabel, "white_grasshopper_1")
-        self.white_grasshopper_2 = self.findChild(ClickableLabel, "white_grasshopper_2")
-        self.white_grasshopper_3 = self.findChild(ClickableLabel, "white_grasshopper_3")
-        self.white_beetle_1 = self.findChild(ClickableLabel, "white_beetle_1")
-        self.white_beetle_2 = self.findChild(ClickableLabel, "white_beetle_2")
-        self.white_spider_1 = self.findChild(ClickableLabel, "white_spider_1")
-        self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
-        self.white_bee = self.findChild(ClickableLabel, "white_bee")
-
-        #game status label
-        self.game_status_label = self.findChild(QLabel, "game_status_label")
-        self.game_status_label.setProperty("class", "game_status_label")
-
-        #Grid
-        self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
-
-        self.creatGrid()
-        #catch control Buttons
-        self.up_button = self.findChild(QPushButton,"up_button")
-        self.down_button = self.findChild(QPushButton,"down_button")
-
-        self.right_button = self.findChild(QPushButton, "right_button")
-        self.left_button = self.findChild(QPushButton, "left_button")
-
-        #add ctrl button style
-        self.up_button.setProperty("class", "ctrl_button")
-        self.left_button.setProperty("class", "ctrl_button")
-        self.right_button.setProperty("class", "ctrl_button")
-        self.down_button.setProperty("class", "ctrl_button")
+        self.catch_UI_elements()
         # connect signal and slot
-
         # connect tiles
-        self.black_ant_1.clicked.connect(lambda: self.clicker(self.black_ant_1))
-        self.white_ant_1.clicked.connect(lambda: self.clicker(self.white_ant_1))
-        self.white_ant_2.clicked.connect(lambda: self.clicker(self.white_ant_2))
-        self.black_ant_2.clicked.connect(lambda: self.clicker(self.black_ant_2))
-        self.black_ant_3.clicked.connect(lambda: self.clicker(self.black_ant_3))
-        self.white_ant_3.clicked.connect(lambda: self.clicker(self.white_ant_3))
+        self.connect_tiles()
 
-        self.black_grasshopper_1.clicked.connect(lambda: self.clicker(self.black_grasshopper_1))
-        self.black_grasshopper_2.clicked.connect(lambda: self.clicker(self.black_grasshopper_2))
-        self.black_grasshopper_3.clicked.connect(lambda: self.clicker(self.black_grasshopper_3))
-        self.white_grasshopper_1.clicked.connect(lambda: self.clicker(self.white_grasshopper_1))
-        self.white_grasshopper_2.clicked.connect(lambda: self.clicker(self.white_grasshopper_2))
-        self.white_grasshopper_3.clicked.connect(lambda: self.clicker(self.white_grasshopper_3))
-
-        self.black_beetle_1.clicked.connect(lambda: self.clicker(self.black_beetle_1))
-        self.black_beetle_2.clicked.connect(lambda: self.clicker(self.black_beetle_2))
-        self.white_beetle_1.clicked.connect(lambda: self.clicker(self.white_beetle_1))
-        self.white_beetle_2.clicked.connect(lambda: self.clicker(self.white_beetle_2))
-
-        self.black_spider_1.clicked.connect(lambda: self.clicker(self.black_spider_1))
-        self.black_spider_2.clicked.connect(lambda: self.clicker(self.black_spider_2))
-        self.white_spider_1.clicked.connect(lambda: self.clicker(self.white_spider_1))
-        self.white_spider_2.clicked.connect(lambda: self.clicker(self.white_spider_2))
-
-        self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
-        self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
 
         self.start_game()
+        # self.start_game()
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
@@ -107,7 +40,8 @@ class GameplayWindow(QMainWindow):
         # Show our custom UI
         self.show()
 
-
+    def start_timer(self):
+        self.game_timer.start(1000)
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
         for cell in allowed_cells:
@@ -203,20 +137,26 @@ class GameplayWindow(QMainWindow):
             self.enable_white_buttons()
 
     def start_game(self):
-        while True:
-            if(game_state.player_allowed_to_play()):
-                self.disable_buttons()
-                self.enable_buttons()
-                current_turn = game_state.turn
-                if game_state.players[current_turn].player_type == 'c':
-                    from_cell, to_cell, piece = game_state.make_a_move()
-                    ##TODO: make the movement in GUI
-                    self.adjust_cells(from_cell,to_cell,piece)
-                    print(from_cell, to_cell, piece)
-                    game_state.update_state(to_cell, piece, from_cell)
-                    game_state.check_for_a_winner()
-                else:
-                    break
+        if(game_state.player_allowed_to_play()):
+            self.disable_buttons()
+            self.enable_buttons()
+            current_turn = game_state.turn
+            if game_state.players[current_turn].player_type == 'c':
+                from_cell, to_cell, piece = game_state.make_a_move()
+                self.start_timer()
+                ##TODO: make the movement in GUI
+                self.adjust_cells(from_cell,to_cell,piece)
+                print(from_cell, to_cell, piece)
+                game_state.update_state(to_cell, piece, from_cell)
+                if game_state.check_for_a_winner() != -1:
+                    print("game finished")
+                    self.game_timer.stop()
+            else:
+                self.game_timer.stop()
+        else:
+            self.game_timer.stop()
+
+
     def adjust_cells(self,from_cell,to_cell,piece):
         if from_cell != None:
             from_row = from_cell.r
@@ -248,6 +188,82 @@ class GameplayWindow(QMainWindow):
         elif piece.name == 'Q' and piece.player == 1:
             to_cell_obj.add_image("Images/White Queen.png")
 
+
+    def catch_UI_elements(self):
+        # Black player tiles
+        self.black_ant_1 = self.findChild(ClickableLabel, "black_ant_1")
+        self.black_ant_2 = self.findChild(ClickableLabel, "black_ant_2")
+        self.black_ant_3 = self.findChild(ClickableLabel, "black_ant_3")
+        self.black_grasshopper_1 = self.findChild(ClickableLabel, "black_grasshopper_1")
+        self.black_grasshopper_2 = self.findChild(ClickableLabel, "black_grasshopper_2")
+        self.black_grasshopper_3 = self.findChild(ClickableLabel, "black_grasshopper_3")
+        self.black_beetle_1 = self.findChild(ClickableLabel, "black_beetle_1")
+        self.black_beetle_2 = self.findChild(ClickableLabel, "black_beetle_2")
+        self.black_spider_1 = self.findChild(ClickableLabel, "black_spider_1")
+        self.black_spider_2 = self.findChild(ClickableLabel, "black_spider_2")
+        self.black_bee = self.findChild(ClickableLabel, "black_bee")
+
+        # White player tiles
+        self.white_ant_1 = self.findChild(ClickableLabel, "white_ant_1")
+        self.white_ant_2 = self.findChild(ClickableLabel, "white_ant_2")
+        self.white_ant_3 = self.findChild(ClickableLabel, "white_ant_3")
+        self.white_grasshopper_1 = self.findChild(ClickableLabel, "white_grasshopper_1")
+        self.white_grasshopper_2 = self.findChild(ClickableLabel, "white_grasshopper_2")
+        self.white_grasshopper_3 = self.findChild(ClickableLabel, "white_grasshopper_3")
+        self.white_beetle_1 = self.findChild(ClickableLabel, "white_beetle_1")
+        self.white_beetle_2 = self.findChild(ClickableLabel, "white_beetle_2")
+        self.white_spider_1 = self.findChild(ClickableLabel, "white_spider_1")
+        self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
+        self.white_bee = self.findChild(ClickableLabel, "white_bee")
+
+        # game status label
+        self.game_status_label = self.findChild(QLabel, "game_status_label")
+        self.game_status_label.setProperty("class", "game_status_label")
+
+        # Grid
+        self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
+
+        self.creatGrid()
+        # catch control Buttons
+        self.up_button = self.findChild(QPushButton, "up_button")
+        self.down_button = self.findChild(QPushButton, "down_button")
+
+        self.right_button = self.findChild(QPushButton, "right_button")
+        self.left_button = self.findChild(QPushButton, "left_button")
+
+        # add ctrl button style
+        self.up_button.setProperty("class", "ctrl_button")
+        self.left_button.setProperty("class", "ctrl_button")
+        self.right_button.setProperty("class", "ctrl_button")
+        self.down_button.setProperty("class", "ctrl_button")
+
+    def connect_tiles(self):
+        self.black_ant_1.clicked.connect(lambda: self.clicker(self.black_ant_1))
+        self.white_ant_1.clicked.connect(lambda: self.clicker(self.white_ant_1))
+        self.white_ant_2.clicked.connect(lambda: self.clicker(self.white_ant_2))
+        self.black_ant_2.clicked.connect(lambda: self.clicker(self.black_ant_2))
+        self.black_ant_3.clicked.connect(lambda: self.clicker(self.black_ant_3))
+        self.white_ant_3.clicked.connect(lambda: self.clicker(self.white_ant_3))
+
+        self.black_grasshopper_1.clicked.connect(lambda: self.clicker(self.black_grasshopper_1))
+        self.black_grasshopper_2.clicked.connect(lambda: self.clicker(self.black_grasshopper_2))
+        self.black_grasshopper_3.clicked.connect(lambda: self.clicker(self.black_grasshopper_3))
+        self.white_grasshopper_1.clicked.connect(lambda: self.clicker(self.white_grasshopper_1))
+        self.white_grasshopper_2.clicked.connect(lambda: self.clicker(self.white_grasshopper_2))
+        self.white_grasshopper_3.clicked.connect(lambda: self.clicker(self.white_grasshopper_3))
+
+        self.black_beetle_1.clicked.connect(lambda: self.clicker(self.black_beetle_1))
+        self.black_beetle_2.clicked.connect(lambda: self.clicker(self.black_beetle_2))
+        self.white_beetle_1.clicked.connect(lambda: self.clicker(self.white_beetle_1))
+        self.white_beetle_2.clicked.connect(lambda: self.clicker(self.white_beetle_2))
+
+        self.black_spider_1.clicked.connect(lambda: self.clicker(self.black_spider_1))
+        self.black_spider_2.clicked.connect(lambda: self.clicker(self.black_spider_2))
+        self.white_spider_1.clicked.connect(lambda: self.clicker(self.white_spider_1))
+        self.white_spider_2.clicked.connect(lambda: self.clicker(self.white_spider_2))
+
+        self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
+        self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
 # TODO
 # connect the backend with the GUI
 
