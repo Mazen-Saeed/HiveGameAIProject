@@ -65,18 +65,19 @@ class ClickableHexagon(QGraphicsPolygonItem):
         # Optional: Clip the image to the hexagonal shape
         clip_path = QPainterPath()
         clip_path.addPolygon(self.polygon())  # Use the hexagonal polygon
-        clip_item = QGraphicsPathItem(clip_path, parent=self)
-        clip_item.setPen(QPen(Qt.NoPen))
+        self.clip_item = QGraphicsPathItem(clip_path, parent=self)
+        self.clip_item.setPen(QPen(Qt.NoPen))
 
         brush = QBrush(self.image_item.pixmap())
-        clip_item.setBrush(brush)
+        self.clip_item.setBrush(brush)
 
-        self.image_item.setParentItem(clip_item)  # Make the image follow the clip
-        # brush = QBrush(scaled_pixmap)
-        # self.setBrush(brush)
-
-
+        self.image_item.setParentItem(self.clip_item)  # Make the image follow the clip
 
     def remove_image(self):
         """Remove the image from the hexagon."""
-        self.setBrush(self.default_brush)
+        if hasattr(self, 'image_item') and self.image_item:
+            self.scene().removeItem(self.image_item)
+            self.image_item = None
+        if hasattr(self, 'clip_item') and self.clip_item:
+            self.scene().removeItem(self.clip_item)
+            self.clip_item = None
