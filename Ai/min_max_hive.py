@@ -13,14 +13,19 @@ class MinMaxAI:
         player = game_state.players[game_state.turn]
         opponent = game_state.players[1 - game_state.turn]
 
-        # Example heuristic: number of placed pieces and queen safety
-        score = len(player.placed_pieces) - len(opponent.placed_pieces)
+        score = (len(player.placed_pieces) - len(opponent.placed_pieces)) * 30
+        if player.get_queen() and opponent.get_queen():
+            score += (len(player.get_queen().get_occupied_neighbors(game_state.state)) -
+                      len(opponent.get_queen().get_occupied_neighbors(game_state.state))) * 20
+            return score
+
         if player.get_queen() and game_state.is_the_queen_surrounded(player.get_queen()):
             score -= 100
         if opponent.get_queen() and game_state.is_the_queen_surrounded(opponent.get_queen()):
             score += 100
 
         return score
+        # Example heuristic: number of placed pieces and queen safety
 
     def min_max(self, game_state, depth, maximizing_player):
         if depth == 0 or game_state.check_for_a_winner() != -1:
@@ -48,7 +53,7 @@ class MinMaxAI:
         else:
             min_eval = float('inf')
             best_move = None
-            for move in game_state.getAllMovesForAI():
+            for move in moves:
                 cloned_state = copy.deepcopy(game_state)
                 cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
                                           cloned_state.state[move[0].r][move[0].q] if move[0] else None
@@ -87,7 +92,7 @@ class MinMaxAI:
         else:
             min_eval = float('inf')
             best_move = None
-            for move in game_state.getAllMovesForAI():
+            for move in moves:
                 cloned_state = copy.deepcopy(game_state)
                 cloned_state.update_state(cloned_state.state[move[1].r][move[1].q], move[2],
                                           cloned_state.state[move[0].r][move[0].q] if move[0] else None

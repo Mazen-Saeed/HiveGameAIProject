@@ -206,7 +206,7 @@ class GameplayWindow(QMainWindow):
                     ##TODO: make the movement in GUI
                     print(from_cell, to_cell, piece)
                     game_state.update_state(to_cell, piece, from_cell)
-                    game_state.check_for_a_winner()
+                    print(game_state.check_for_a_winner())
                 else:
                     break
 

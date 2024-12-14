@@ -42,10 +42,11 @@ class GameState:
             ai = MinMaxAI(depth=3)
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         else:
-            ai = MinMaxAI(depth=5)  # Higher depth for hard level
+            ai = MinMaxAI(depth=4)  # Higher depth for hard level
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
 
         # Perform the best move
+        print(best_move)
         from_cell, to_cell, piece = best_move
         return from_cell, to_cell, piece
 
