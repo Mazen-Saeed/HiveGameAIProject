@@ -47,6 +47,9 @@ class ClickableHexagon(QGraphicsPolygonItem):
     def mark(self):
         self.setPen(QPen(QColor("cyan"), 2))  # Default border color
 
+    def unmark(self):
+        self.setPen(QPen(QColor("transparent"), 2))  # Default border color
+
     def add_image(self, image_path):
         """Set a scaled image as the brush for the hexagon."""
         pixmap = QPixmap(image_path)
