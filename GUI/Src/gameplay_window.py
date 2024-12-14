@@ -29,10 +29,8 @@ class GameplayWindow(QMainWindow):
         # connect signal and slot
         # connect tiles
         self.connect_tiles()
-
-
         self.start_game()
-        # self.start_game()
+
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
@@ -41,7 +39,7 @@ class GameplayWindow(QMainWindow):
         self.show()
 
     def start_timer(self):
-        self.game_timer.start(1000)
+        self.game_timer.start(50)
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
         for cell in allowed_cells:
@@ -51,12 +49,14 @@ class GameplayWindow(QMainWindow):
         if not tile.pressed:
             tile.pressed = True
             tile.setStyleSheet("border: 2px solid aqua;")
+            self.hex_grid.hex_items.get((21,21)).add_image("Images/Black Ant.png")
         else:
+            self.hex_grid.hex_items.get((21, 21)).remove_image()
             tile.pressed = False
             tile.setStyleSheet("QLabel { border: 1px solid transparent; } QLabel:hover { border: 2px solid aqua; }")
 
     def creatGrid(self):
-        hex_size = 52  # Adjust the size of the hexagons as needed
+        hex_size = 50  # Adjust the size of the hexagons as needed
         self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
 
         self.up_button.clicked.connect(lambda: self.hex_grid.move_view(0, -100))
@@ -184,9 +184,9 @@ class GameplayWindow(QMainWindow):
         elif piece.name == 'S' and piece.player == 1:
             to_cell_obj.add_image("Images/White Spider.png")
         elif piece.name == 'Q' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Queen.png")
+            to_cell_obj.add_image("Images/Black Bee.png")
         elif piece.name == 'Q' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Queen.png")
+            to_cell_obj.add_image("Images/White Bee.png")
 
 
     def catch_UI_elements(self):
