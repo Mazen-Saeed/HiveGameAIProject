@@ -2,6 +2,8 @@ from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMainWindow,QLabel, QPushButton, QFrame, QVBoxLayout
 from PyQt5.QtGui import QFontDatabase
 from PyQt5 import uic
+from PyQt5.QtCore import Qt
+import sys
 import os
 
 from GUI.Src.ClickableLabel import ClickableLabel
@@ -31,6 +33,10 @@ class GameplayWindow(QMainWindow):
         self.connect_tiles()
         self.start_turn()
 
+        self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
+        self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
+
+        self.start_game()
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
