@@ -241,9 +241,9 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>30</y>
+      <y>40</y>
       <width>102</width>
-      <height>941</height>
+      <height>931</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -395,7 +395,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../Images/Blace Bee.png</pixmap>
+        <pixmap>../Images/Black Bee.png</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>
