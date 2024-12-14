@@ -39,10 +39,10 @@ class GameState:
             ai = MinMaxAI(depth=2)
             best_move = ai.min_max(self, ai.depth, True)
         elif self.players[self.turn].get_level() == "m":
-            ai = AlphaBetaPruningAI(depth=3)
+            ai = MinMaxAI(depth=3)
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         else:
-            ai = AlphaBetaPruningAI(depth=5)  # Higher depth for hard level
+            ai = MinMaxAI(depth=5)  # Higher depth for hard level
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
 
         # Perform the best move
@@ -200,6 +200,9 @@ class GameState:
             self.reset_for_new_turn()
         return result
 
+    def get_unplaced_pieces(self):
+        return self.players[self.turn].get_unplaced_pieces()
+
     def getAllMovesForAI(self):
         """
         Generates all possible moves and placements for the AI.
@@ -209,15 +212,21 @@ class GameState:
         """
         moves = []
 
-        unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
-        for piece in unplaced_pieces:
+        if self.players[self.turn].get_moves_count() == 3:
             for to_cell in self.current_allowed_placements:
-                moves.append((None, to_cell, piece))
+                moves.append((None, to_cell, Queen(self.turn)))
+            return moves
 
-        for from_cell, allowed_moves in self.current_allowed_moves.items():
-            for to_cell in allowed_moves:
-                piece = from_cell.get_top_piece()
-                moves.append((from_cell, to_cell, piece))
+        if self.player_allowed_to_play():
+            unplaced_pieces = self.players[self.turn].get_unplaced_pieces()
+            for piece in unplaced_pieces:
+                for to_cell in self.current_allowed_placements:
+                    moves.append((None, to_cell, piece))
+
+            for from_cell, allowed_moves in self.current_allowed_moves.items():
+                for to_cell in allowed_moves:
+                    piece = from_cell.get_top_piece()
+                    moves.append((from_cell, to_cell, piece))
 
         return moves
 game_state = GameState()
