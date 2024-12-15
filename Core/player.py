@@ -81,7 +81,7 @@ class Player:
         return self.queen
 
     def queen_unplaced(self):
-        return self.get_queen()
+        return not bool(self.get_queen())
 
     def set_queen(self, cell: CellPosition):
         self.queen = cell
