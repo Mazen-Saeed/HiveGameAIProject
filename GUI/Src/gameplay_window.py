@@ -15,6 +15,7 @@ from GUI.Src.ClickableLabel import ClickableLabel
 from GUI.Src.HexaGrid import CustomHexagonalGrid
 
 from Core.game_state import GameState,game_state
+
 from pieces import Ant, Beetle, Grasshopper, Spider, Queen
 
 
@@ -142,8 +143,9 @@ class GameplayWindow(QMainWindow):
         self.white_bee.enable()
 
     def enable_black_buttons(self):
-        self.black_ant_2.enable()
         self.black_ant_3.enable()
+        self.black_ant_1.enable()
+        self.black_ant_2.enable()
         self.black_grasshopper_1.enable()
         self.black_grasshopper_2.enable()
         self.black_grasshopper_3.enable()
@@ -172,7 +174,9 @@ class GameplayWindow(QMainWindow):
             current_turn = game_state.turn
             if game_state.players[current_turn].player_type == 'c':
                 self.ai_turn()
-                if game_state.check_for_a_winner() != -1:
+                state = game_state.check_for_a_winner()
+                if state != -1:
+                    self.winning_label_show(state)
                     print("game finished")
                     self.game_timer.stop()
             else:
@@ -280,6 +284,25 @@ class GameplayWindow(QMainWindow):
             self.left_button.setProperty("class", "ctrl_button")
             self.right_button.setProperty("class", "ctrl_button")
             self.down_button.setProperty("class", "ctrl_button")
+            # add control buttons (reset - home)
+            self.home_button = self.findChild(QPushButton,"home_button")
+            self.restart_button = self.findChild(QPushButton,"restart_button")
+            self.home_button.clicked.connect(self.home_page_reload)
+            self.restart_button.clicked.connect(self.restart_page_reload)
+    def home_page_reload(self):
+
+        from GUI.Src.start_window import StartWindow
+        self.start_window = StartWindow()
+        self.start_window.showFullScreen()  # Show the new window fullscreen
+        self.close()  # Close the current window
+
+
+    def restart_page_reload(self):
+        game_state.reset(game_state.players[0].player_type,game_state.players[1].player_type,game_state.players[0].player_level,game_state.players[0].player_level)
+        """Replace the current window with a new one."""
+        self.new_window = GameplayWindow()  # Create a new instance
+        self.new_window.showFullScreen()  # Show the new window fullscreen
+        self.close()  # Close the current window
 
     def connect_tiles(self):
         self.black_ant_1.clicked.connect(lambda: self.clicker(self.black_ant_1))
@@ -440,7 +463,9 @@ class GameplayWindow(QMainWindow):
 
                 self.adjust_cells(None,clicked_cell,piece)
                 game_state.update_state(clicked_cell,piece,None)
-                if game_state.check_for_a_winner() != -1:
+                state = game_state.check_for_a_winner()
+                if state != -1:
+                    self.winning_label_show(state)
                     print("game finished")
                 else:
                     self.start_turn()
@@ -472,7 +497,9 @@ class GameplayWindow(QMainWindow):
                     piece = from_cell.get_top_piece()
                     self.adjust_cells(from_cell, clicked_cell, piece)
                     game_state.update_state(clicked_cell, None, from_cell)
-                    if game_state.check_for_a_winner() != -1:
+                    state = game_state.check_for_a_winner()
+                    if state != -1:
+                        self.winning_label_show(state)
                         print("game finished")
                     else:
                         self.start_turn()
@@ -482,6 +509,15 @@ class GameplayWindow(QMainWindow):
             pass
         else:
             pass
+    def winning_label_show(self,state):
+        if state == 0:
+            self.game_status_label.setText("Black Player Won")
+        elif state == 1:
+            self.game_status_label.setText("White Player Won")
+        elif state == 2 :
+            self.game_status_label.setText("Draw")
+        self.disable_buttons()
+
 
 
 # TODO
