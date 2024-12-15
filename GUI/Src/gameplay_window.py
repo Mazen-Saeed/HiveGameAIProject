@@ -1,3 +1,5 @@
+from functools import partial
+
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMainWindow,QLabel, QPushButton, QFrame, QVBoxLayout
 from PyQt5.QtGui import QFontDatabase
@@ -6,10 +8,14 @@ from PyQt5.QtCore import Qt
 import sys
 import os
 
+from Core.cell_position import CellPosition
+from GUI.Src.ClickableHexagon import ClickableHexagon
 from GUI.Src.ClickableLabel import ClickableLabel
 from GUI.Src.HexaGrid import CustomHexagonalGrid
 
 from Core.game_state import GameState,game_state
+from pieces import Ant, Beetle, Grasshopper, Spider, Queen
+
 
 class GameplayWindow(QMainWindow):
     def __init__(self):
@@ -29,14 +35,13 @@ class GameplayWindow(QMainWindow):
         # catch UI element from ui file
         self.catch_UI_elements()
         self.creatGrid()
+        self.connect_grid()
         self.init_tiles()
         # connect signal and slot
         # connect tiles
         self.connect_tiles()
         self.start_turn()
 
-
-        self.start_turn()
         # set style sheet for the application
         with open("Style/gameplay_window.qss", "r") as file:
             stylesheet = file.read()
@@ -65,6 +70,7 @@ class GameplayWindow(QMainWindow):
             self.hex_grid.state = "waiting"
             self.hex_grid.selected_tile = None
             self.hex_grid.current_player = None
+            self.hex_grid.selected_tile_number = None
             for cell in allowed_cells:
                 row = cell.r
                 col = cell.q
@@ -160,13 +166,13 @@ class GameplayWindow(QMainWindow):
             current_turn = game_state.turn
             if game_state.players[current_turn].player_type == 'c':
                 self.ai_turn()
+                if game_state.check_for_a_winner() != -1:
+                    print("game finished")
+                    self.game_timer.stop()
             else:
                 self.game_timer.stop()
                 self.player_turn()
 
-            if game_state.check_for_a_winner() != -1:
-                print("game finished")
-                self.game_timer.stop()
         self.adjust_game_label()
 
     def ai_turn(self):
@@ -177,6 +183,7 @@ class GameplayWindow(QMainWindow):
         game_state.update_state(to_cell, piece, from_cell)
 
     def player_turn(self):
+        test = game_state.must_place_queen_bee()
         if game_state.must_place_queen_bee():
             self.queen_must_play()
 
@@ -379,6 +386,62 @@ class GameplayWindow(QMainWindow):
     def init_tiles(self):
         self.init_black_tiles()
         self.init_white_tiles()
+
+    def connect_grid(self):
+        for row, col in self.hex_grid.hex_items:
+            self.hex_grid.hex_items[(row, col)].signal.polygonClicked.connect(partial(self.handle_hexagon_click, self.hex_grid.hex_items[(row, col)]))
+
+    def handle_hexagon_click(self, clicked_hexagon : ClickableHexagon):
+        clicked_cell = game_state.state[clicked_hexagon.row][clicked_hexagon.col]
+        if self.hex_grid.state == "waiting":
+            if game_state.is_the_piece_on_cell_ok(clicked_cell):
+                if clicked_hexagon.is_selected:
+                    pass
+                else:
+                    self.hex_grid.state = "first_select"
+                    self.hex_grid.selected_hexagon = clicked_hexagon
+                    allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(clicked_cell)
+                    for cell in allowed_cells:
+                        row = cell.r
+                        col = cell.q
+                        self.hex_grid.hex_items.get((row, col)).mark()
+
+        elif self.hex_grid.state == "placement":
+            self.hex_grid.state = "waiting"
+            piece = None
+            if self.hex_grid.selected_tile == "A":
+                piece = Ant(self.hex_grid.current_player)
+            elif self.hex_grid.selected_tile == "B":
+                piece = Beetle(self.hex_grid.current_player)
+            elif self.hex_grid.selected_tile == "G":
+                piece = Grasshopper(self.hex_grid.current_player)
+            elif self.hex_grid.selected_tile == "S":
+                piece = Spider(self.hex_grid.current_player)
+            elif self.hex_grid.selected_tile == "Q":
+                piece = Queen(self.hex_grid.current_player)
+
+            if game_state.is_this_cell_ok(clicked_cell,piece,None):
+                allowed_cells = game_state.get_allowed_cells()
+                for cell in allowed_cells:
+                    row = cell.r
+                    col = cell.q
+                    self.hex_grid.hex_items.get((row, col)).unmark()
+
+                self.adjust_cells(None,clicked_cell,piece)
+                game_state.update_state(clicked_cell,piece,None)
+                if game_state.check_for_a_winner() != -1:
+                    print("game finished")
+                self.start_turn()
+
+
+        elif self.hex_grid.state == "first_select":
+
+            pass
+        elif self.hex_grid.state == "second_select":
+            pass
+        else:
+            pass
+
 
 # TODO
 # connect the backend with the GUI
