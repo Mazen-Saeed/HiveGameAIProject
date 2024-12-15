@@ -95,8 +95,10 @@ class GameState:
         if not self.current_allowed_moves:
             self.players[self.turn].is_there_allowed_moves_for_player(self.state,self.current_allowed_moves)
 
-        print(cell)
-        return self.current_allowed_moves[cell]
+        if cell in self.current_allowed_moves.keys():
+            return self.current_allowed_moves[cell]
+        else:
+            return None
 
     def is_the_piece_on_cell_ok(self, cell: CellPosition):
         """

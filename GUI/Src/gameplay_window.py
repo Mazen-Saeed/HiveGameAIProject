@@ -50,7 +50,7 @@ class GameplayWindow(QMainWindow):
         self.show()
 
     def start_timer(self):
-        self.game_timer.start(50)
+        self.game_timer.start(100)
 
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
@@ -160,7 +160,6 @@ class GameplayWindow(QMainWindow):
 
     def start_turn(self):
         self.disable_buttons()
-        print("A")
         self.enable_buttons()
         if(game_state.player_allowed_to_play()):
             current_turn = game_state.turn
@@ -176,8 +175,8 @@ class GameplayWindow(QMainWindow):
         self.adjust_game_label()
 
     def ai_turn(self):
-        from_cell, to_cell, piece = game_state.make_a_move()
         self.start_timer()
+        from_cell, to_cell, piece = game_state.make_a_move()
         self.adjust_cells(from_cell, to_cell, piece)
         print(from_cell, to_cell, piece)
         game_state.update_state(to_cell, piece, from_cell)
@@ -395,12 +394,11 @@ class GameplayWindow(QMainWindow):
         clicked_cell = game_state.state[clicked_hexagon.row][clicked_hexagon.col]
         if self.hex_grid.state == "waiting":
             if game_state.is_the_piece_on_cell_ok(clicked_cell):
-                if clicked_hexagon.is_selected:
-                    pass
-                else:
-                    self.hex_grid.state = "first_select"
-                    self.hex_grid.selected_hexagon = clicked_hexagon
-                    allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(clicked_cell)
+                self.hex_grid.state = "first_select"
+                self.hex_grid.selected_hexagon = clicked_hexagon
+                clicked_hexagon.is_selected = True
+                allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(clicked_cell)
+                if allowed_cells is not None:
                     for cell in allowed_cells:
                         row = cell.r
                         col = cell.q
@@ -431,12 +429,41 @@ class GameplayWindow(QMainWindow):
                 game_state.update_state(clicked_cell,piece,None)
                 if game_state.check_for_a_winner() != -1:
                     print("game finished")
-                self.start_turn()
+                else:
+                    self.start_turn()
 
 
         elif self.hex_grid.state == "first_select":
+            self.hex_grid.state = "waiting"
+            if clicked_hexagon.is_selected:
+                self.hex_grid.selected_hexagon = None
+                clicked_hexagon.is_selected = False
+                allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(clicked_cell)
+                for cell in allowed_cells:
+                    row = cell.r
+                    col = cell.q
+                    self.hex_grid.hex_items.get((row, col)).unmark()
+            else:
+                from_cell_hexagon = self.hex_grid.selected_hexagon
+                from_cell =  game_state.state[from_cell_hexagon.row][from_cell_hexagon.col]
 
-            pass
+                if game_state.is_this_cell_ok(clicked_cell, None,from_cell):
+                    allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(from_cell)
+                    if allowed_cells is not None:
+                        for cell in allowed_cells:
+                            row = cell.r
+                            col = cell.q
+                            self.hex_grid.hex_items.get((row, col)).unmark()
+
+                    piece = from_cell.get_top_piece()
+                    self.adjust_cells(from_cell, clicked_cell, piece)
+                    game_state.update_state(clicked_cell, None, from_cell)
+                    if game_state.check_for_a_winner() != -1:
+                        print("game finished")
+                    else:
+                        self.start_turn()
+
+
         elif self.hex_grid.state == "second_select":
             pass
         else:

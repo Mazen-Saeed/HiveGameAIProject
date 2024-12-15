@@ -30,11 +30,9 @@ class ClickableHexagon(QGraphicsPolygonItem):
     def mousePressEvent(self, event):
         """Handle click events."""
         if not self.is_selected:
-            self.is_selected = True
             # self.setBrush(self.selected_brush)
             print(f"Hexagon at ({self.row}, {self.col}) selected")
         else:
-            self.is_selected = False
             # self.setBrush(self.default_brush)
             print(f"Hexagon at ({self.row}, {self.col}) deselected")
         self.signal.polygonClicked.emit()
