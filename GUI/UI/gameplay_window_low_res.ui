@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1360</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLabel" name="hive_label">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>150</y>
+      <width>381</width>
+      <height>198</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Purisa</family>
+      <pointsize>100</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>HIVE</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="hive_photo">
+    <property name="geometry">
+     <rect>
+      <x>808</x>
+      <y>98</y>
+      <width>300</width>
+      <height>300</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../Images/hive_photo.png</pixmap>
+    </property>
+   </widget>
+   <widget class="QLabel" name="game_label">
+    <property name="geometry">
+     <rect>
+      <x>1217</x>
+      <y>154</y>
+      <width>481</width>
+      <height>198</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Purisa</family>
+      <pointsize>100</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>GAME</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="start_game_button">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>482</y>
+      <width>523</width>
+      <height>99</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>48</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Start Game</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="exit_button">
+    <property name="geometry">
+     <rect>
+      <x>710</x>
+      <y>692</y>
+      <width>523</width>
+      <height>99</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>48</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Exit</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="player_one_frame">
+    <property name="geometry">
+     <rect>
+      <x>307</x>
+      <y>487</y>
+      <width>350</width>
+      <height>350</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="player_one_type_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>132</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AI</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="player_one_label">
+     <property name="geometry">
+      <rect>
+       <x>71</x>
+       <y>38</y>
+       <width>221</width>
+       <height>54</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Player One</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="player_one_diff_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>252</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Easy</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="player_two_frame">
+    <property name="geometry">
+     <rect>
+      <x>1286</x>
+      <y>472</y>
+      <width>350</width>
+      <height>350</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QPushButton" name="player_two_type_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>132</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Human</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="player_two_label">
+     <property name="geometry">
+      <rect>
+       <x>71</x>
+       <y>38</y>
+       <width>221</width>
+       <height>54</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Player Two</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="player_two_diff_button">
+     <property name="geometry">
+      <rect>
+       <x>23</x>
+       <y>252</y>
+       <width>302</width>
+       <height>65</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>30</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Easy</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
