@@ -16,7 +16,8 @@ class StartWindow(QMainWindow):
     def __init__(self):
         super(StartWindow,self).__init__()
 
-        self.setFixedSize(1917, 1080)
+        # self.setFixedSize(1917, 1080)
+        self.showMaximized()
         #load ui file
         print(os.getcwd()) # for debugging
         uic.loadUi("UI/start_window.ui",self)

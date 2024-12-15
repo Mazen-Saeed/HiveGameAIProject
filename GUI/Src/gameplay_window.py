@@ -22,6 +22,7 @@ class GameplayWindow(QMainWindow):
         super(GameplayWindow, self).__init__()
         # set the Size of the window
         # self.setFixedSize(1917, 1080)
+        self.showMaximized()
         # load ui file
         print(os.getcwd())  # for debugging
         uic.loadUi("UI/gameplay_window.ui", self)
