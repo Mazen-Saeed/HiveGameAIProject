@@ -121,6 +121,7 @@ class StartWindow(QMainWindow):
                 self.player_two_diff = 'h'
 
         #self.game_state = GameState()
+
         game_state._initialize_state(self.player_one_type,self.player_two_type,self.player_one_diff,self.player_two_diff)
         self.play_window = GameplayWindow()
         self.play_window.show()
