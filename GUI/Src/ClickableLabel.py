@@ -12,6 +12,9 @@ class ClickableLabel(QLabel):
         self.init_shadow()
         self.is_enabled = True
         self.playable = True
+        self.type = None
+        self.player = None
+        self.number = None
 
     def init_shadow(self):
         # Create a shadow effect

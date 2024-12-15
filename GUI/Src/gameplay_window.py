@@ -28,13 +28,13 @@ class GameplayWindow(QMainWindow):
 
         # catch UI element from ui file
         self.catch_UI_elements()
+        self.creatGrid()
+        self.init_tiles()
         # connect signal and slot
         # connect tiles
         self.connect_tiles()
         self.start_turn()
 
-        self.black_bee.clicked.connect(lambda: self.clicker(self.black_bee))
-        self.white_bee.clicked.connect(lambda: self.clicker(self.white_bee))
 
         self.start_turn()
         # set style sheet for the application
@@ -50,6 +50,11 @@ class GameplayWindow(QMainWindow):
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
         if not tile.pressed:
+            self.hex_grid.state = "placement"
+            self.hex_grid.selected_tile = tile.type
+            self.hex_grid.current_player = tile.player
+            self.hex_grid.selected_tile_number = tile.number
+
             for cell in allowed_cells:
                 row = cell.r
                 col = cell.q
@@ -57,6 +62,9 @@ class GameplayWindow(QMainWindow):
             tile.pressed = True
             tile.setStyleSheet("border: 2px solid aqua;")
         else:
+            self.hex_grid.state = "waiting"
+            self.hex_grid.selected_tile = None
+            self.hex_grid.current_player = None
             for cell in allowed_cells:
                 row = cell.r
                 col = cell.q
@@ -67,7 +75,6 @@ class GameplayWindow(QMainWindow):
     def creatGrid(self):
         hex_size = 50  # Adjust the size of the hexagons as needed
         self.hex_grid = CustomHexagonalGrid(parent=self.grid_placeholder, hex_size=hex_size)
-
         self.up_button.clicked.connect(lambda: self.hex_grid.move_view(0, -100))
         self.down_button.clicked.connect(lambda: self.hex_grid.move_view(0, 100))
         self.right_button.clicked.connect(lambda: self.hex_grid.move_view(100, 0))
@@ -242,7 +249,6 @@ class GameplayWindow(QMainWindow):
         # Grid
         self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
 
-        self.creatGrid()
         # catch control Buttons
         self.up_button = self.findChild(QPushButton, "up_button")
         self.down_button = self.findChild(QPushButton, "down_button")
@@ -296,6 +302,84 @@ class GameplayWindow(QMainWindow):
         else:
             self.disable_white_buttons()
             self.white_bee.enable()
+
+    def init_black_tiles(self):
+        self.black_ant_1.player = 0
+        self.black_ant_2.player = 0
+        self.black_ant_3.player = 0
+        self.black_grasshopper_1.player = 0
+        self.black_grasshopper_2.player = 0
+        self.black_grasshopper_3.player = 0
+        self.black_beetle_1.player = 0
+        self.black_beetle_2.player = 0
+        self.black_spider_1.player = 0
+        self.black_spider_2.player = 0
+        self.black_bee.player = 0
+
+        self.black_ant_1.type = "A"
+        self.black_ant_2.type = "A"
+        self.black_ant_3.type = "A"
+        self.black_grasshopper_1.type = "G"
+        self.black_grasshopper_2.type = "G"
+        self.black_grasshopper_3.type = "G"
+        self.black_beetle_1.type = "B"
+        self.black_beetle_2.type = "B"
+        self.black_spider_1.type = "S"
+        self.black_spider_2.type = "S"
+        self.black_bee.type = "Q"
+
+        self.black_ant_1.number = 1
+        self.black_ant_2.number = 2
+        self.black_ant_3.number = 3
+        self.black_grasshopper_1.number = 1
+        self.black_grasshopper_2.number = 2
+        self.black_grasshopper_3.number = 3
+        self.black_beetle_1.number = 1
+        self.black_beetle_2.number = 2
+        self.black_spider_1.number = 1
+        self.black_spider_2.number = 2
+        self.black_bee.number = 1
+
+    def init_white_tiles(self):
+        self.white_ant_1.player = 1
+        self.white_ant_2.player = 1
+        self.white_ant_3.player = 1
+        self.white_grasshopper_1.player = 1
+        self.white_grasshopper_2.player = 1
+        self.white_grasshopper_3.player = 1
+        self.white_beetle_1.player = 1
+        self.white_beetle_2.player = 1
+        self.white_spider_1.player = 1
+        self.white_spider_2.player = 1
+        self.white_bee.player = 1
+        self.white_ant_1.type = "A"
+        self.white_ant_2.type = "A"
+        self.white_ant_3.type = "A"
+        self.white_grasshopper_1.type = "G"
+        self.white_grasshopper_2.type = "G"
+        self.white_grasshopper_3.type = "G"
+        self.white_beetle_1.type = "B"
+        self.white_beetle_2.type = "B"
+        self.white_spider_1.type = "S"
+        self.white_spider_2.type = "S"
+        self.white_bee.type = "Q"
+
+        self.white_ant_1.number = 1
+        self.white_ant_2.number = 2
+        self.white_ant_3.number = 3
+        self.white_grasshopper_1.number = 1
+        self.white_grasshopper_2.number = 2
+        self.white_grasshopper_3.number = 3
+        self.white_beetle_1.number = 1
+        self.white_beetle_2.number = 2
+        self.white_spider_1.number = 1
+        self.white_spider_2.number = 2
+        self.white_bee.number = 1
+
+    def init_tiles(self):
+        self.init_black_tiles()
+        self.init_white_tiles()
+
 # TODO
 # connect the backend with the GUI
 

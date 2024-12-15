@@ -1,15 +1,22 @@
 import math
 
-from PyQt5.QtCore import Qt, QRect, QSize
+from PyQt5.QtCore import Qt, QRect, QSize, pyqtSignal, QObject
 from PyQt5.QtGui import QPen, QColor, QPixmap, QPainterPath, QRegion, QBrush, QPainter
 from PyQt5.QtWidgets import QGraphicsPolygonItem, QGraphicsPixmapItem, QGraphicsItemGroup, QGraphicsItem, \
     QGraphicsRectItem, QGraphicsPathItem
+
+class SignalEmitter(QObject):
+    """A helper class to handle signals."""
+    polygonClicked = pyqtSignal()
+    def init(self, parent=None):
+        super().__init__(parent)
 
 
 class ClickableHexagon(QGraphicsPolygonItem):
     """A subclass of QGraphicsPolygonItem to make hexagons clickable."""
     def __init__(self, polygon, row, col, parent=None):
         super().__init__(polygon, parent)
+        self.signal = SignalEmitter()
         self.image_item = None
         self.row = row
         self.col = col
@@ -24,12 +31,15 @@ class ClickableHexagon(QGraphicsPolygonItem):
         """Handle click events."""
         if not self.is_selected:
             self.is_selected = True
-            self.setBrush(self.selected_brush)
+            # self.setBrush(self.selected_brush)
             print(f"Hexagon at ({self.row}, {self.col}) selected")
         else:
             self.is_selected = False
-            self.setBrush(self.default_brush)
+            # self.setBrush(self.default_brush)
             print(f"Hexagon at ({self.row}, {self.col}) deselected")
+        self.signal.polygonClicked.emit()
+        super().mousePressEvent(event)
+
 
     # def hoverEnterEvent(self, event):
     #     """Change appearance on hover."""
