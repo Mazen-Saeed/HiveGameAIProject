@@ -1,6 +1,7 @@
 from functools import partial
 
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import QTimer, QUrl
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer, QSoundEffect
 from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QFrame, QVBoxLayout, QApplication
 from PyQt5.QtGui import QFontDatabase
 from PyQt5 import uic
@@ -225,54 +226,60 @@ class GameplayWindow(QMainWindow):
             to_cell_obj.add_image("Images/Black Bee.png")
         elif piece.name == 'Q' and piece.player == 1:
             to_cell_obj.add_image("Images/White Bee.png")
+        self.play_sound()
+    def play_sound(self):
+        self.sound_effect = QSoundEffect()
+        self.sound_effect.setSource(QUrl.fromLocalFile("Sounds/move_sound.wav"))  # Use absolute path if necessary
+        self.sound_effect.setVolume(1.0)
+        self.sound_effect.play()
 
 
     def catch_UI_elements(self):
-        # Black player tiles
-        self.black_ant_1 = self.findChild(ClickableLabel, "black_ant_1")
-        self.black_ant_2 = self.findChild(ClickableLabel, "black_ant_2")
-        self.black_ant_3 = self.findChild(ClickableLabel, "black_ant_3")
-        self.black_grasshopper_1 = self.findChild(ClickableLabel, "black_grasshopper_1")
-        self.black_grasshopper_2 = self.findChild(ClickableLabel, "black_grasshopper_2")
-        self.black_grasshopper_3 = self.findChild(ClickableLabel, "black_grasshopper_3")
-        self.black_beetle_1 = self.findChild(ClickableLabel, "black_beetle_1")
-        self.black_beetle_2 = self.findChild(ClickableLabel, "black_beetle_2")
-        self.black_spider_1 = self.findChild(ClickableLabel, "black_spider_1")
-        self.black_spider_2 = self.findChild(ClickableLabel, "black_spider_2")
-        self.black_bee = self.findChild(ClickableLabel, "black_bee")
+            # Black player tiles
+            self.black_ant_1 = self.findChild(ClickableLabel, "black_ant_1")
+            self.black_ant_2 = self.findChild(ClickableLabel, "black_ant_2")
+            self.black_ant_3 = self.findChild(ClickableLabel, "black_ant_3")
+            self.black_grasshopper_1 = self.findChild(ClickableLabel, "black_grasshopper_1")
+            self.black_grasshopper_2 = self.findChild(ClickableLabel, "black_grasshopper_2")
+            self.black_grasshopper_3 = self.findChild(ClickableLabel, "black_grasshopper_3")
+            self.black_beetle_1 = self.findChild(ClickableLabel, "black_beetle_1")
+            self.black_beetle_2 = self.findChild(ClickableLabel, "black_beetle_2")
+            self.black_spider_1 = self.findChild(ClickableLabel, "black_spider_1")
+            self.black_spider_2 = self.findChild(ClickableLabel, "black_spider_2")
+            self.black_bee = self.findChild(ClickableLabel, "black_bee")
 
-        # White player tiles
-        self.white_ant_1 = self.findChild(ClickableLabel, "white_ant_1")
-        self.white_ant_2 = self.findChild(ClickableLabel, "white_ant_2")
-        self.white_ant_3 = self.findChild(ClickableLabel, "white_ant_3")
-        self.white_grasshopper_1 = self.findChild(ClickableLabel, "white_grasshopper_1")
-        self.white_grasshopper_2 = self.findChild(ClickableLabel, "white_grasshopper_2")
-        self.white_grasshopper_3 = self.findChild(ClickableLabel, "white_grasshopper_3")
-        self.white_beetle_1 = self.findChild(ClickableLabel, "white_beetle_1")
-        self.white_beetle_2 = self.findChild(ClickableLabel, "white_beetle_2")
-        self.white_spider_1 = self.findChild(ClickableLabel, "white_spider_1")
-        self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
-        self.white_bee = self.findChild(ClickableLabel, "white_bee")
+            # White player tiles
+            self.white_ant_1 = self.findChild(ClickableLabel, "white_ant_1")
+            self.white_ant_2 = self.findChild(ClickableLabel, "white_ant_2")
+            self.white_ant_3 = self.findChild(ClickableLabel, "white_ant_3")
+            self.white_grasshopper_1 = self.findChild(ClickableLabel, "white_grasshopper_1")
+            self.white_grasshopper_2 = self.findChild(ClickableLabel, "white_grasshopper_2")
+            self.white_grasshopper_3 = self.findChild(ClickableLabel, "white_grasshopper_3")
+            self.white_beetle_1 = self.findChild(ClickableLabel, "white_beetle_1")
+            self.white_beetle_2 = self.findChild(ClickableLabel, "white_beetle_2")
+            self.white_spider_1 = self.findChild(ClickableLabel, "white_spider_1")
+            self.white_spider_2 = self.findChild(ClickableLabel, "white_spider_2")
+            self.white_bee = self.findChild(ClickableLabel, "white_bee")
 
-        # game status label
-        self.game_status_label = self.findChild(QLabel, "game_status_label")
-        self.game_status_label.setProperty("class", "game_status_label")
+            # game status label
+            self.game_status_label = self.findChild(QLabel, "game_status_label")
+            self.game_status_label.setProperty("class", "game_status_label")
 
-        # Grid
-        self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
+            # Grid
+            self.grid_placeholder = self.findChild(QFrame, "grid_placeholder")
 
-        # catch control Buttons
-        self.up_button = self.findChild(QPushButton, "up_button")
-        self.down_button = self.findChild(QPushButton, "down_button")
+            # catch control Buttons
+            self.up_button = self.findChild(QPushButton, "up_button")
+            self.down_button = self.findChild(QPushButton, "down_button")
 
-        self.right_button = self.findChild(QPushButton, "right_button")
-        self.left_button = self.findChild(QPushButton, "left_button")
+            self.right_button = self.findChild(QPushButton, "right_button")
+            self.left_button = self.findChild(QPushButton, "left_button")
 
-        # add ctrl button style
-        self.up_button.setProperty("class", "ctrl_button")
-        self.left_button.setProperty("class", "ctrl_button")
-        self.right_button.setProperty("class", "ctrl_button")
-        self.down_button.setProperty("class", "ctrl_button")
+            # add ctrl button style
+            self.up_button.setProperty("class", "ctrl_button")
+            self.left_button.setProperty("class", "ctrl_button")
+            self.right_button.setProperty("class", "ctrl_button")
+            self.down_button.setProperty("class", "ctrl_button")
 
     def connect_tiles(self):
         self.black_ant_1.clicked.connect(lambda: self.clicker(self.black_ant_1))
