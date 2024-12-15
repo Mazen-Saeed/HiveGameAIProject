@@ -1,7 +1,7 @@
 from functools import partial
 
 from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QMainWindow,QLabel, QPushButton, QFrame, QVBoxLayout
+from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QFrame, QVBoxLayout, QApplication
 from PyQt5.QtGui import QFontDatabase
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -22,7 +22,12 @@ class GameplayWindow(QMainWindow):
         super(GameplayWindow, self).__init__()
         # set the Size of the window
         # self.setFixedSize(1917, 1080)
-        self.showMaximized()
+        # self.showMaximized()
+        screen_geometry = QApplication.primaryScreen().geometry()
+        self.setGeometry(screen_geometry)  # Set the window geometry to the screen size
+
+        # Optional: Set full-screen mode
+        self.showFullScreen()  # Makes the window full screen
         # load ui file
         print(os.getcwd())  # for debugging
         uic.loadUi("UI/gameplay_window.ui", self)
@@ -406,7 +411,6 @@ class GameplayWindow(QMainWindow):
                         self.hex_grid.hex_items.get((row, col)).mark()
 
         elif self.hex_grid.state == "placement":
-            self.hex_grid.state = "waiting"
             piece = None
             if self.hex_grid.selected_tile == "A":
                 piece = Ant(self.hex_grid.current_player)
@@ -420,6 +424,7 @@ class GameplayWindow(QMainWindow):
                 piece = Queen(self.hex_grid.current_player)
 
             if game_state.is_this_cell_ok(clicked_cell,piece,None):
+                self.hex_grid.state = "waiting"
                 allowed_cells = game_state.get_allowed_cells()
                 for cell in allowed_cells:
                     row = cell.r
@@ -440,10 +445,11 @@ class GameplayWindow(QMainWindow):
                 self.hex_grid.selected_hexagon = None
                 clicked_hexagon.is_selected = False
                 allowed_cells = game_state.get_allowed_cells_given_the_piece_on_cell(clicked_cell)
-                for cell in allowed_cells:
-                    row = cell.r
-                    col = cell.q
-                    self.hex_grid.hex_items.get((row, col)).unmark()
+                if allowed_cells is not None:
+                    for cell in allowed_cells:
+                        row = cell.r
+                        col = cell.q
+                        self.hex_grid.hex_items.get((row, col)).unmark()
             else:
                 from_cell_hexagon = self.hex_grid.selected_hexagon
                 from_cell =  game_state.state[from_cell_hexagon.row][from_cell_hexagon.col]
