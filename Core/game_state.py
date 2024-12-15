@@ -91,12 +91,12 @@ class GameState:
         ## NOTE: this should be the object from the game_board, because
                  otherwise it won't hold the pieces.
         """
-        piece = cell.get_top_piece()
 
         if not self.current_allowed_moves:
             self.players[self.turn].is_there_allowed_moves_for_player(self.state,self.current_allowed_moves)
 
-        return self.current_allowed_moves[piece]
+        print(cell)
+        return self.current_allowed_moves[cell]
 
     def is_the_piece_on_cell_ok(self, cell: CellPosition):
         """
