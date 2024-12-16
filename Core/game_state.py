@@ -36,13 +36,13 @@ class GameState:
 
     def make_a_move(self):
         if self.players[self.turn].get_level() == "e":
-            ai = MinMaxAI(depth=2)
-            best_move = ai.min_max(self, ai.depth, True)
+            ai = MinMaxAI(depth=1)
+            best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         elif self.players[self.turn].get_level() == "m":
-            ai = MinMaxAI(depth=3)
+            ai = MinMaxAI(depth=2)
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
         else:
-            ai = MinMaxAI(depth=4)  # Higher depth for hard level
+            ai = MinMaxAI(depth=3)  # Higher depth for hard level
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
 
         # Perform the best move
@@ -166,7 +166,7 @@ class GameState:
         self.current_allowed_placements = set()
 
 
-    def update_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None):
+    def update_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None, is_caller_minmax=False):
         """
         Updates the game state after a move, including the position of the piece and any necessary changes
         to the turn, move count, and available pieces.
@@ -179,13 +179,14 @@ class GameState:
         if from_cell:
             piece = from_cell.remove_piece()
         to_cell.add_piece(piece)
-
+        
         if isinstance(piece, Queen):
             self.players[self.turn].set_queen(to_cell)
 
         self.players[self.turn].update_available_pieces(from_cell, to_cell)
-
+        print(self.players[self.turn].placed_pieces)
         self.players[self.turn].moves_count += 1
+        #if not is_caller_minmax:
         self.reset_for_new_turn()
 
     def player_allowed_to_play(self):
@@ -197,7 +198,8 @@ class GameState:
         """
         self.current_allowed_placements = self.get_allowed_cells()
         # updates current allowed moves by reference
-        self.players[self.turn].is_there_allowed_moves_for_player(self.state, self.current_allowed_moves)
+        if self.players[self.turn].moves_count > 1:
+            self.players[self.turn].is_there_allowed_moves_for_player(self.state, self.current_allowed_moves)
         result = self.current_allowed_placements or self.current_allowed_moves
         if not result:
             self.reset_for_new_turn()
@@ -215,7 +217,7 @@ class GameState:
         """
         moves = []
 
-        if self.players[self.turn].get_moves_count() == 3:
+        if self.must_place_queen_bee():
             for to_cell in self.current_allowed_placements:
                 moves.append((None, to_cell, Queen(self.turn)))
             return moves
