@@ -33,6 +33,8 @@ class AvailablePieces:
             return self.pieces.pop(self.pieces.index(piece))
         else:
             raise ValueError(f"{piece} not found in available pieces: {[str(p) for p in self.pieces]}.")
+    def add_back(self, piece):
+        return self.pieces.append(piece)
 
     def is_this_piece_available(self, piece):
         return piece in self.pieces
@@ -95,7 +97,15 @@ class Player:
         else:
             self.placed_pieces.remove(from_cell)
         self.placed_pieces.append(to_cell)
-
+    def undo_available_pieces(self, from_cell, to_cell):
+        # Make sure this is called BEFORE the piece is moved in GameState.undo_state()
+        # bad design
+        # but oh well
+        if not from_cell:
+            self.unplaced_pieces.add_back(to_cell.get_top_piece())
+        else:
+            self.placed_pieces.append(from_cell)
+        self.placed_pieces.remove(to_cell)
     def is_there_allowed_moves_for_player(self, board_state, current_allowed_moves):
         found_moves = False
         if not self.get_queen():

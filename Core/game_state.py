@@ -4,6 +4,19 @@ from Core.cell_position import CellPosition
 from Core.player import Player
 import copy
 
+
+
+import time
+previous_time = time.time()
+
+def get_time_diff():
+    global previous_time
+    # Simulate work with different delays
+    current_time = time.time()
+    time_difference = current_time - previous_time
+    print(f"Time since previous line = {time_difference:.3f} seconds")
+    previous_time = current_time
+
 class GameState:
     def __deepcopy__(self, memo):
         # Create a new instance
@@ -32,6 +45,8 @@ class GameState:
         self.turn = 0  # Reset turn to player 1 (0 >> player 1 and 1 >> player 2)
         self.current_allowed_moves = {}
         self.current_allowed_placements = set()
+        self.allowed_moves_stack = []
+        self.allowed_placements_stack = []
         self.playerWon = -1  # 0 if player 1, 1 if player 2 win, 2 if draw, -1 if game in progress
 
     def make_a_move(self):
@@ -46,7 +61,7 @@ class GameState:
             best_move = ai.alpha_beta(self, ai.depth, float('-inf'), float('inf'), True)
 
         # Perform the best move
-        print(best_move)
+        #print(best_move)
         from_cell, to_cell, piece = best_move
         return from_cell, to_cell, piece
 
@@ -160,11 +175,18 @@ class GameState:
         else:
             return -1  # No one has won yet (game still in progress)
 
-    def reset_for_new_turn(self):
+    def reset_for_new_turn(self, is_caller_minmax=False):
         self.turn = 1 - self.turn
+        if is_caller_minmax:
+            self.allowed_moves_stack.append(self.current_allowed_moves)
+            self.allowed_placements_stack.append(self.current_allowed_placements)
         self.current_allowed_moves = dict()
         self.current_allowed_placements = set()
 
+    def undo_for_new_turn(self):
+        self.turn = 1 - self.turn
+        self.current_allowed_moves = self.allowed_moves_stack.pop()
+        self.current_allowed_placements = self.allowed_placements_stack.pop()
 
     def update_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None, is_caller_minmax=False):
         """
@@ -182,12 +204,38 @@ class GameState:
         
         if isinstance(piece, Queen):
             self.players[self.turn].set_queen(to_cell)
-
+        
+        #print(f"Placed pieces for {self.turn} before update: {self.players[self.turn].placed_pieces}")
         self.players[self.turn].update_available_pieces(from_cell, to_cell)
-        print(self.players[self.turn].placed_pieces)
+        #print(f"Placed pieces for {self.turn} after update: {self.players[self.turn].placed_pieces}")
         self.players[self.turn].moves_count += 1
         #if not is_caller_minmax:
-        self.reset_for_new_turn()
+        self.reset_for_new_turn(is_caller_minmax)
+    def undo_state(self, to_cell: CellPosition, piece: Piece=None, from_cell: CellPosition=None, is_caller_minmax=False):
+        """
+        Updates the game state after a move, including the position of the piece and any necessary changes
+        to the turn, move count, and available pieces.
+
+        :param to_cell: The cell to which the piece is placing/moving
+        :param piece: The piece being placed (e.g., a Queen Bee, Ant, Grasshopper, etc.), None if player is moving a piece
+        :param from_cell: The cell from which the piece is moving, None if the player is placing a piece
+        :return: None
+        """
+        self.undo_for_new_turn()
+        #print(f"Placed pieces for {self.turn} before undo: {self.players[self.turn].placed_pieces}")
+        self.players[self.turn].undo_available_pieces(from_cell, to_cell)
+        #print(f"Placed pieces for {self.turn} after undo: {self.players[self.turn].placed_pieces}")
+        
+        piece = to_cell.remove_piece()
+        if from_cell:
+            from_cell.add_piece(piece)
+        
+        if isinstance(piece, Queen):
+            self.players[self.turn].set_queen(from_cell)
+
+        
+        self.players[self.turn].moves_count -= 1
+        #if not is_caller_minmax:
 
     def player_allowed_to_play(self):
         """
@@ -196,13 +244,24 @@ class GameState:
 
         :return: bool
         """
+        #print(self)
+        #print("STARTED FUNCTION")
+        #get_time_diff()
         self.current_allowed_placements = self.get_allowed_cells()
+        #print(self.turn, self.current_allowed_placements)
+        #print("GOT ALLOWED PLACEMENTS")
+        #get_time_diff()
         # updates current allowed moves by reference
         if self.players[self.turn].moves_count > 1:
             self.players[self.turn].is_there_allowed_moves_for_player(self.state, self.current_allowed_moves)
+        #print("GOT ALLOWED MOVEMENTS")
+        #get_time_diff()
         result = self.current_allowed_placements or self.current_allowed_moves
+        # TODO: this won't work well with minmax
         if not result:
             self.reset_for_new_turn()
+        #print("EXITED FUNCTION")
+        #get_time_diff()
         return result
 
     def get_unplaced_pieces(self):
