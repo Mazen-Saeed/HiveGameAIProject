@@ -3,7 +3,7 @@
 ## Overview
 The Hive Game Project is an implementation of a popular strategy board game, developed using Python and PyQt to deliver an engaging and feature-rich experience. Designed for both casual and competitive players.
 
-![Game Image](/main/Hive_Ai_vs_Human.png)
+![Game Image](/Hive_Ai_vs_Human.png)
 ---
 
 ## Features
