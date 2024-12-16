@@ -6,36 +6,36 @@ class MinMaxAI:
         self.depth = depth
 
 
-    def evaluate(self, game_state):
+    def evaluate(self, game_state, maximizing_player):
         """
         Heuristic evaluation of the game state.
         """
         player = game_state.players[game_state.turn]
         opponent = game_state.players[1 - game_state.turn]
-
+        
+        factor = 1 if maximizing_player else -1
         score = (len(player.placed_pieces) - len(opponent.placed_pieces)) * 30
+        if player.get_queen() and game_state.is_the_queen_surrounded(player.get_queen()):
+            score -= 100000
+        if opponent.get_queen() and game_state.is_the_queen_surrounded(opponent.get_queen()):
+            score += 100000
+
         if player.get_queen() and opponent.get_queen():
             score += (len(player.get_queen().get_occupied_neighbors(game_state.state)) -
                       len(opponent.get_queen().get_occupied_neighbors(game_state.state))) * 20
-            return score
+        return score * factor
 
-        if player.get_queen() and game_state.is_the_queen_surrounded(player.get_queen()):
-            score -= 100
-        if opponent.get_queen() and game_state.is_the_queen_surrounded(opponent.get_queen()):
-            score += 100
-
-        return score
         # Example heuristic: number of placed pieces and queen safety
 
     def min_max(self, game_state, depth, maximizing_player):
         if depth == 0 or game_state.check_for_a_winner() != -1:
-            return self.evaluate(game_state)
+            return self.evaluate(game_state, maximizing_player)
 
         moves = game_state.getAllMovesForAI()
 
         if not moves:
             # No valid moves; return a default evaluation score
-            return self.evaluate(game_state)
+            return self.evaluate(game_state, maximizing_player)
 
         if maximizing_player:
             max_eval = float('-inf')
