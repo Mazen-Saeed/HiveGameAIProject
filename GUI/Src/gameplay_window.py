@@ -1,21 +1,18 @@
 from functools import partial
 
-from PyQt5.QtCore import QTimer, QUrl
+from PyQt5.QtCore import QTimer, QUrl, QCoreApplication
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer, QSoundEffect
 from PyQt5.QtWidgets import QMainWindow, QLabel, QPushButton, QFrame, QVBoxLayout, QApplication
 from PyQt5.QtGui import QFontDatabase
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
-import sys
 import os
 
-from Core.cell_position import CellPosition
 from GUI.Src.ClickableHexagon import ClickableHexagon
 from GUI.Src.ClickableLabel import ClickableLabel
 from GUI.Src.HexaGrid import CustomHexagonalGrid
 
-from Core.game_state import GameState,game_state
-
+from Core.game_state import game_state
+from GUI.Src.utils import resource_path
 from pieces import Ant, Beetle, Grasshopper, Spider, Queen
 
 
@@ -32,8 +29,10 @@ class GameplayWindow(QMainWindow):
         self.showFullScreen()  # Makes the window full screen
         # load ui file
         print(os.getcwd())  # for debugging
-        uic.loadUi("UI/gameplay_window.ui", self)
+        ui_file = resource_path("UI/gameplay_window.ui")
+        uic.loadUi(ui_file, self)
 
+        self.styleSheet()
         self.load_font_needed()
 
         self.game_timer = QTimer()
@@ -51,14 +50,15 @@ class GameplayWindow(QMainWindow):
         self.start_turn()
 
         # set style sheet for the application
-        with open("Style/gameplay_window.qss", "r") as file:
+        game_window_qss = resource_path("Style/gameplay_window.qss")
+        with open(game_window_qss, "r") as file:
             stylesheet = file.read()
             self.setStyleSheet(stylesheet)
         # Show our custom UI
         self.show()
 
     def start_timer(self):
-        self.game_timer.start(100)
+        self.game_timer.start(1000)
 
     def clicker(self,tile: ClickableLabel):
         allowed_cells = game_state.get_allowed_cells()
@@ -97,7 +97,8 @@ class GameplayWindow(QMainWindow):
         layout.addWidget(self.hex_grid)
 
     def load_font_needed(self):
-        font_id = QFontDatabase.addApplicationFont("Fonts/Pridi-SemiBold.ttf")
+        load_font = resource_path("Fonts/Pridi-SemiBold.ttf")
+        font_id = QFontDatabase.addApplicationFont(load_font)
         if font_id == -1:
             print("Failed to load the font.")
         else:
@@ -174,16 +175,17 @@ class GameplayWindow(QMainWindow):
             current_turn = game_state.turn
             if game_state.players[current_turn].player_type == 'c':
                 self.ai_turn()
-                state = game_state.check_for_a_winner()
-                if state != -1:
-                    self.winning_label_show(state)
-                    print("game finished")
-                    self.game_timer.stop()
+
             else:
                 self.game_timer.stop()
                 self.player_turn()
 
         self.adjust_game_label()
+        state = game_state.check_for_a_winner()
+        if state != -1:
+            self.winning_label_show(state)
+            print("game finished")
+            self.game_timer.stop()
 
     def ai_turn(self):
         self.start_timer()
@@ -191,6 +193,11 @@ class GameplayWindow(QMainWindow):
         self.adjust_cells(from_cell, to_cell, piece)
         print(from_cell, to_cell, piece)
         game_state.update_state(to_cell, piece, from_cell)
+        state = game_state.check_for_a_winner()
+        if state != -1:
+            self.winning_label_show(state)
+            print("game finished")
+            self.game_timer.stop()
 
     def player_turn(self):
         test = game_state.must_place_queen_bee()
@@ -211,29 +218,40 @@ class GameplayWindow(QMainWindow):
         to_col = to_cell.q
         to_cell_obj = self.hex_grid.hex_items.get((to_row,to_col))
         if piece.name == 'A' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Ant.png")
+            load_image = resource_path("Images/Black Ant.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'A' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Ant.png")
+            load_image = resource_path("Images/White Ant.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'G' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Grasshopper.png")
+            load_image = resource_path("Images/Black Grasshopper.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'G' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Grasshopper.png")
+            load_image = resource_path("Images/White Grasshopper.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'B' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Beetle.png")
+            load_image = resource_path("Images/Black Beetle.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'B' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Beetle.png")
+            load_image = resource_path("Images/White Beetle.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'S' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Spider.png")
+            load_image = resource_path("Images/Black Spider.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'S' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Spider.png")
+            load_image = resource_path("Images/White Spider.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'Q' and piece.player == 0:
-            to_cell_obj.add_image("Images/Black Bee.png")
+            load_image = resource_path("Images/Black Bee.png")
+            to_cell_obj.add_image(load_image)
         elif piece.name == 'Q' and piece.player == 1:
-            to_cell_obj.add_image("Images/White Bee.png")
+            load_image = resource_path("Images/White Bee.png")
+            to_cell_obj.add_image(load_image)
         self.play_sound()
     def play_sound(self):
         self.sound_effect = QSoundEffect()
-        self.sound_effect.setSource(QUrl.fromLocalFile("Sounds/move_sound.wav"))  # Use absolute path if necessary
+        load_sound = resource_path("Sounds/move_sound.wav")
+        self.sound_effect.setSource(QUrl.fromLocalFile(load_sound))  # Use absolute path if necessary
         self.sound_effect.setVolume(1.0)
         self.sound_effect.play()
 
@@ -516,6 +534,8 @@ class GameplayWindow(QMainWindow):
             self.game_status_label.setText("White Player Won")
         elif state == 2 :
             self.game_status_label.setText("Draw")
+        # Process events to force the label to update immediately
+        QCoreApplication.processEvents()
         self.disable_buttons()
 
 
