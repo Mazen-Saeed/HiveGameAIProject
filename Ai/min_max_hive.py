@@ -112,3 +112,94 @@ class MinMaxAI:
         evaluated_moves_list = []
         #print((2 - depth) * "  " + "Time before getting all moves evals: " + get_time_diff())
         #i = 0
+        for move in moves:
+            #print((2 - depth) * "  " + str(i) + " -->")
+            #i += 1
+            #print((2 - depth) * "  " + "Before clone: " + get_time_diff())
+            #cloned_state = copy.deepcopy(game_state)
+            #print((2 - depth) * "  " + "After clone: " + get_time_diff())
+            
+            #print("Before update state")
+            #get_time_diff()
+            #print("LEN OF PLACED PIECES before: ", len(cloned_state.players[cloned_state.turn].placed_pieces))
+            #print((2 - depth) * "  " + "Before update state: " + get_time_diff())
+            
+            #print((2 - depth) * "  " + "BEFOR: ", game_state.current_allowed_placements, game_state.turn)
+            #print((2 - depth) * "  " + "BEFOR: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+            game_state.update_state(game_state.state[move[1].r][move[1].q], move[2],
+                                      game_state.state[move[0].r][move[0].q] if move[0] else None,
+                                      True
+                                      )
+            evaluated_moves_list.append((self.evaluate(game_state, maximizing_player), move))
+            game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
+                                  game_state.state[move[0].r][move[0].q] if move[0] else None)
+            #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+            #print((2 - depth) * "  " + "AFTER: ", game_state.current_allowed_placements, game_state.turn)
+            #print((2 - depth) * "  " + "After update state: " + get_time_diff())
+            
+            #print("After update state")
+            #get_time_diff()
+            #print("LEN OF PLACED PIECES after: ", len(cloned_state.players[1 - cloned_state.turn].placed_pieces))
+            ##print("PLACEMENT?", move[0], " MOVE? ", move[0], move[1])
+            #print("CLONED STATE ID: ", cloned_state)
+            #print("current player: ", 1 - cloned_state.turn)
+        
+        #print((2 - depth) * "  " + "Time after getting all moves evals: " + get_time_diff())
+          
+        if maximizing_player:
+            max_eval = float('-inf')
+            best_move = None
+            evaluated_moves_list.sort(key=lambda move: -move[0])
+            for score, move in evaluated_moves_list:
+                print((2 - depth) * "  " + f"({score}, {move})")
+            for _, move in evaluated_moves_list:
+                #print((2 - depth) * "  " + "BEFOR: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+                game_state.update_state(game_state.state[move[1].r][move[1].q], move[2],
+                                        game_state.state[move[0].r][move[0].q] if move[0] else None,
+                                        True
+                                        )
+                eval = self.alpha_beta(game_state, depth - 1, alpha, beta, False)
+                game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
+                                  game_state.state[move[0].r][move[0].q] if move[0] else None)
+                #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+            
+                #print((2 - depth) * "  " + "After  recursive call: " + get_time_diff())
+                #get_time_diff()
+                if eval > max_eval:
+                    max_eval = eval
+                    best_move = move
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    print(f"{alpha}/{beta}:________________________ PRUNED _____________________")
+                    break
+            #print("Exit alpha-beta")
+            #get_time_diff()
+            if depth == self.depth:
+                print("############################################# BEST MOVE: ", best_move)
+            return best_move if depth == self.depth else max_eval
+        else:
+            min_eval = float('inf')
+            best_move = None
+            evaluated_moves_list.sort(key=lambda move: move[0])
+            
+            for score, move in evaluated_moves_list:
+                print((2 - depth) * "  " + f"({score}, {move})")
+                
+            for _, move in evaluated_moves_list:
+                #print((2 - depth) * "  " + "BEFOR: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+                game_state.update_state(game_state.state[move[1].r][move[1].q], move[2],
+                                      game_state.state[move[0].r][move[0].q] if move[0] else None,
+                                      True
+                                      )
+                eval = self.alpha_beta(game_state, depth - 1, alpha, beta, True)
+                game_state.undo_state(game_state.state[move[1].r][move[1].q], move[2],
+                                  game_state.state[move[0].r][move[0].q] if move[0] else None)
+                #print((2 - depth) * "  " + "AFTER: ", game_state.players[game_state.turn].unplaced_pieces, game_state.turn)
+                if eval < min_eval:
+                    min_eval = eval
+                    best_move = move
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    print(f"{alpha}/{beta}:________________________ PRUNED _____________________")
+                    break
+            return best_move if depth == self.depth else min_eval
